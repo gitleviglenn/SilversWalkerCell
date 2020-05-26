@@ -1,0 +1,1100 @@
+%\documentclass[11pt]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\documentclass[draft]{agujournal2019}
+\usepackage{url} %this package should fix any errors with URLs in refs.
+\usepackage{lineno}
+\usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
+\usepackage{soul}
+\linenumbers
+
+\draftfalse
+
+\journalname{Journal of Advances in Modeling Earth Systems (JAMES)}
+
+\begin{document}
+
+			% Activate to display a given date or no date
+\title{Clouds and Radiation in a mock-Walker Circulation}
+\authors{Levi G. Silvers\affil{1,*}, and Thomas Robinson\affil{2}}
+
+\affiliation{1}{Princeton University/GFDL, Princeton, New Jersey, USA}
+\affiliation{2}{GFDL/NOAA, SAIC, Science Applications International Corporation, Reston, VA, USA}
+\affiliation{*}{Current Affiliation: School of Marine and Atmospheric Sciences, Stony Brook University, Stony Brook, NY, USA}
+
+\correspondingauthor{Levi Silvers}{levi.silvers@stonybrook.edu}
+
+%\textbf{Key Points: choose three}.   % key points can be at most 140 characters
+\begin{keypoints}
+%  \item{At 25 km, simulations with parameterized shallow- and deep-convection exhibit asymmetries in the circulation, 
+ % precipitation, and humidity fields resulting in a steady-state overturning circulation that is not centered on the SST
+%  maximum.}
+  \item{Cloud resolving simulations result in more upper-level clouds, relative to lower resolution simulations which have more low-level clouds.}
+  \item{High and low clouds interact differently with longwave radiation to increase or decrease the mean precipitation, depending on which cloud type is dominant.}
+  \item{Interactions between clouds and radiation combined with parameterized convection shift the precipitation 
+  maximum away from the SST maximum.}
+ % \item{The longwave cloud-radiative effect is a fundamental factor in establishing these asymmetries and leads to dramatic
+ % changes in the low-level clouds and boundary layer structure.}
+  %\item{Cloud resolving simulations result in stronger overturning, more condensate aloft, and a RH in the deep convective 
+  %region that is 40\% higher than for the coarser cases with parameterized convection.}
+%  \item{The mock-Walker Circulation can be thought of as RCE plus an imposed gradient in surface temperature.}
+\end{keypoints}
+
+
+\begin{abstract}
+
+The Walker circulation connects the regions with deep atmospheric convection in the western tropical Pacific to the shallow-convection, tropospheric subsidence, and stratocumulus cloud decks of the eastern Pacific.  Although important to many elements of the Earth system such as tropical precipitation, and cloud feedback processes, the interactions between large-scale tropical circulations and these cloud systems are still not well understood.   The purpose of this study is to better understand the multi-scale interactions between the Walker circulation, cloud systems, and interactive radiation.  
+To do this we simulate a mock-Walker Circulation with a full-physics General Circulation Model (GCM) using idealized boundary conditions.  Our experiments use a doubly-periodic domain with grid-spacing of 1, 2, 25, and 100km.  We thus span the range from General Circulation Models (GCMs) to Cloud-system Resolving Models (CRMs).  Our model is derived from the Geophysical Fluid Dynamics Laboratory (GFDL) atmospheric GCM (AM4.0).  Our GCM-like experiments have a large low-level cloud fraction while the CRM-like experiments have more upper-level clouds.  This difference leads to opposite atmospheric responses to changes in the longwave cloud radiative effect (LWCRE).  Active LWCRE lead to increased precipitation for our GCMs, but decreased precipitation for our CRMs.  The LWCRE leads to a narrower rising branch of the circulation and substantially increases the fraction of precipitation from the large-scale cloud parameterization.  Decreasing the grid-spacing to 1km and 2km results in stronger overturning circulations, more condensate aloft, and less domain mean precipitation.    This work demonstrates that a mock-Walker circulation is a useful generalization of RCE that includes a large-scale circulation.
+
+
+\end{abstract}
+
+\section*{Plain Language Summary}
+Interactions between clouds, radiation, and dynamics all contribute
+to the large-scale tropical motions and are fundamental to the Walker circulation.  
+The Walker circulation is the name of the loop consisting of surface winds towards the western tropical Pacific, 
+strong upward motion and deep convection in that region,  and the return eastward winds aloft that 
+eventually sink towards the surface in the eastern Pacific basin.  
+We focus on an idealization of the Walker circulation (a mock-Walker circulation) 
+in which the strong rising motion and deep convection is driven by a patch of warm sea surface temperature (SST).  
+Our results show that the response of the atmosphere to the 
+radiative flux of energy depends strongly on the relative amount of clouds at different heights.   
+It is further shown that our GCM-like models are dominated by low-clouds while our CRM-like models 
+are dominated by high-clouds.  This work also argues that an idealized Walker circulation is an 
+excellent configuration with which to better understand the interactions between clouds, radiation and circulation 
+and to push the development of models forward.   Models of mock-Walker circulations represents
+an intermediate tier in a hierarchy of models between Earth-like models and the models of 
+radiative convective equilibrium (RCE).  
+
+
+\section{Introduction}
+
+The tropical Pacific is an ideal location to study interactions between clouds and the circulation 
+because it combines strong overturning circulations, abundant shallow cumulus, congestus, and cumulonimbus 
+clouds \cite{Johnson1999} as well as stratocumulus cloud decks along the eastern extremities of the basin.
+These overturning circulations encompass dynamical motions at scales
+ranging from meters to thousands of km's all of which interact with each of the different cloud types.
+The circulation first noted by Sir Gilbert Walker, and described by \citeA{Bjerknes1969} connects the 
+western Pacific region with warm SST and strong deep convection to the eastern Pacific region which tends to 
+be populated more by shallow cumulus and, in the subtropics, stratocumulus clouds.  
+This circulation, now known as the Walker Circulation, is a response to the 
+longitudinal asymmetries in the tropical atmospheric heating and is tightly coupled with 
+the El Nino Southern Oscillation.    
+The Walker Circulation is a compelling example of both thermodynamic and dynamic interactions
+between moisture and the large-scale circulation.  It is also a framework that can be compared 
+to observations and tested with a variety of model configurations. 
+
+It is also clear that the tropical Pacific plays an important role in the response of the climate to radiative perturbations. 
+Recent work has shown that the interactions between clouds, patterns of Sea Surface Temperature (SST), and the circulation 
+in the tropical Pacific play an important role in determining the cloud feedback and the decadal 
+variability of the climate feedback 
+\cite<e.g.,>[]{Andrews_Webb_2018, Zhou_etal_2016, Silvers_etal_2018, Fueglistaler_2019}.
+While the Hadley circulation connects the tropics with the midlatitudes,  
+the Walker circulation is one of the primary mechanisms by which the clouds, SST and circulations 
+are coupled to each other in the tropics.  
+We propose that focusing on the Walker Circulation can lead to new insights into 
+several questions that are critical to a better understanding of the tropical climate and cloud processes.    
+These questions include: 
+\begin{itemize}
+  \item{How do clouds influence the overturning circulation?}
+  \item{To what extent are the deep convective clouds and the low-level clouds coupled through 
+  the overturning circulation?}
+  \item{When simulating tropical overturning circulations, how well does a GCM compare to a CRM?}  
+\end{itemize}
+In global and Earth-like GCM simulations, the interplay between the overturning circulation and clouds is difficult to disentangle from other 
+processes such as the Hadley cell and convectively coupled tropical waves.  
+Many of the studies with CRMs that have focused on the tropical overturning circulation in a more idealized context have been restricted to 
+relatively small domain sizes and highly simplified physics parameterizations.  
+The result is a gap in the types of simulation for this region that is so important to our understanding of clouds in the Earth's climate system.  
+
+This work uses the framework of a mock-Walker circulation to simulate an overturning tropical circulation with 
+both a GCM-like model and a CRM-like model.
+ Idealized models of the Walker circulation were first called `mock-Walker circulations' by \citeA{Raymond_1994}.  
+\citeA{Raymond_1994} envisioned an idealized Walker circulation as,``a possible venue for testing ideas 
+about the interaction of dynamics, moist convection, and sea-air transfers that is simple enough to 
+be understandable, but rich enough to be interesting."
+Using the mock-Walker circulation as a tool to help distill the processes in complex climate models into 
+concrete understanding was also proposed by \citeA{Jeevanjee_etal_2017}.
+There have been many notable studies of the Walker Circulation \cite<e.g.,>[]{Geisler_1981, Raymond_1994, Grabowski2000, Tompkins_2001, Bretherton_Sobel_2002, Bretherton_etal_2006, Wofsy_Kuang_2012, Schwendike_etal_2014}.  
+Previous studies have focused on observations \cite{Bjerknes1969, Schwendike_etal_2014}, theory \cite{Gill_1980, Geisler_1981, Raymond_1994,Bretherton_Sobel_2002}, or a combination of modeling and simple theory 
+\cite{Grabowski2000, Sobel_etal_2004, Peters_Bretherton_2005, Bretherton_etal_2006, Wofsy_Kuang_2012,Kuang_2012}.  
+The modeling studies have primarily used models we refer to as Cloud-system 
+Resolving Models (CRMs; grid-spacing of less than 5km, no convective parameterization).  
+Multiple studies have presented elegant conceptual and theoretical models of the overturning tropical circulation 
+\cite{Raymond_1994, Pierrehumbert_1995, Larson_etal_1999, Bretherton_Sobel_2002}.  
+However, these simplified theoretical models of the circulation differ from each other in important details and 
+have different parameter dependencies.  
+Their simplicity helps to provide insight into those models, but is difficult to translate
+to the tropical climates produced by GCMs.  
+Most of these previous studies greatly simplify both the radiation and the representation of clouds.  
+They point to the importance of the interactions between clouds, radiation and the large-scale circulation while 
+avoiding much of the complexity of those processes.   
+
+Current climate models continue to be developed with an increasingly fine resolution and 
+the domain size used with CRMs continues to grow.  As a result the line between these two types 
+of models has become blurred and there is a need to systematically compare the clouds and their 
+influence on the climate produced by each type of model \cite{Schneider_etal_2017}.
+By simulating a mock-Walker Circulation in the context of both a GCM and a CRM we 
+illustrate how inextricable the interactions between clouds and radiation are to the coupling 
+of moisture with the large-scale circulation.     
+The model used here is based on GFDL's AM4.0 GCM that participated in CMIP6, having a full suite of physics parameterizations.  
+Rather than a full global domain all of our experiments use a doubly-periodic domain.    
+This is conceptually similar to Held et al., (2007), which used an earlier generation GFDL climate model on a doubly-periodic domain to study RCE.   
+The combination of a doubly periodic domain and a current generation climate model allow us to analyze the interactions of the 
+circulation and clouds in simulations with grid-spacing that ranges from 1km to 100km.  
+We thus study a full-physics GCM in an idealized context that is relevant to observed tropical systems, to theoretical
+models of the tropical circulation, and to many of the recent studies of radiative convective equilibrium (RCE).   
+
+
+The broad goal of this paper is to clarify the two-way interactions between the Walker circulation and 
+the various cloud types that are prevalent in the tropical Pacific.   Our specific goal is
+to compare the Walker circulation and clouds simulated with a GCM-like model to analogous 
+simulations from a CRM-like model using one modeling framework based on a single code base. 
+This serves as the framework with which we naively attempt to transition a GCM 
+towards a CRM.  Our initial motivation for using the 
+GFDL AM4.0 model on a doubly-periodic domain was to simulate a tropical Pacific-like region 
+in the context of both a GCM and a CRM in the hopes that resolving more of the turbulent motions and circulations
+would help us to better understand the physics and the mechanisms which are at work in the cloud-circulation
+interactions of the tropical Pacific and improve our ability to model this region in a GCM.    
+We perform a series of sensitivity experiments that highlight the different ways in which these experiments can equilibrate.  
+The climatology of the precipitation, both the amount and location, is particularly sensitive to changes in the configuration.   
+We demonstrate the impact to the mean state of convective parameterization, LW radiative interactions with clouds, domain size, 
+and the resolution, or grid-spacing.
+
+The paper is organized as follows.  Details of the model and the particular experiments used are described
+in the next section. Section three gives a broad description of the mock-Walker circulation in our simulations and
+describes the tendency of experiments with parameterized convection 
+to settle into states which do not mirror the symmetry of the prescribed sea surface temperature.   
+Then, section four shows how the distribution of precipitation changes as a function of domain size.  
+Section five will describe and contrast the Walker circulation in a GCM-like and a CRM-like configuration and
+section 6 includes a brief discussion and lists some of the impacts of the LWCRE and changing 
+resolution.  Conclusions are given in the last section.   
+
+\section{Experimental Details and Methods}
+
+All simulations use a nonhydrostatic dynamical core, with prescribed SSTs and a doubly periodic domain which is elongated in the zonal 
+direction allowing for three dimensional simulations but with a reduced computational cost relative to the default global domain.  
+The domain is flat, non rotating, and has uniform and constant insolation.
+The lower boundary is a water covered surface with the SST prescribed as a time invariant Gaussian function 
+which is 4K warmer in the center (301K/27.85C) of the domain then 
+at the edges (297K/23.85C).  
+To develop the model configuration used for these experiments we started with the same code base as that of the 
+recently developed atmospheric global climate model AM4.0 \cite{Zhao_etal18a, Zhao_etal18b} (Z18a and Z18b hereafter).
+AM4.0 uses the GFDL finite-volume cubed-sphere dynamical core FV3 \cite{Harris_Lin_2013}
+which can solve either the hydrostatic primitive equations or the nonhydrostatic fully compressible Euler equations over a wide range of resolutions.   
+Current generation global GFDL models use a cubed-sphere grid composed of six tiles.  We use the model on a single doubly-periodic
+tile.  This allows the grid-spacing and domain size to be easily changed to minimize the cost of computations.
+This study focuses on experiments with grid-spacing of 1km, 2km, 25km, and 100km on several different
+sizes of domain.  Additional details are given in Table \ref{tab:experimentspecs}.  
+
+The default AM4.0 physics we use includes interactive radiation, parameterized deep- and shallow-convection, 
+a large-scale cloud scheme, and a boundary layer 
+scheme as described in Z18a,b, and the references therein.  The prognostic moisture variables are the specific 
+humidity (q), liquid (ql) and frozen water (qi), and cloud fraction.  The top of the model domain is at 1 hPa, with 33 vertical 
+levels and a sponge layer extending downward to 8 hPa.  The kilometer of atmosphere just above the surface is resolved by 
+8 model levels.  Changes made to the default AM4.0 physics in this study are as follows.  The cloud-aerosol 
+interactions were turned off to focus on the interaction between clouds, radiation, and the circulation.  The gravity wave drag 
+parameterization was turned off 
+%(do_cg_drag set to .f.; Alexander-Dunkerton gravity wave drag) 
+in order to reduce large oscillations which developed in the horizontal wind field near the top of the model domain.  
+The convection, radiation, large-scale cloud, microphysics, and turbulence parameterizations all remain the same 
+as in AM4.0.   Thus for the experiments with the convection parameterized (grid-spacing of 25km and 100km), the 
+physics are very similar to those of AM4.0.  
+This configuration of AM4.0 physics was initially used by \citeA{Popp_Silvers_2017} and more recently for the aquaplanet model
+used as part of GFDL's contribution to the CFMIP component of CMIP6.  
+
+% Time step information
+% Based on an earlier version of the experiments (see notes lgs_081318):
+%
+%    Grid Spacing                dt
+%.         1km                        5s
+%.         2km                       20s
+%.         25km                    600s
+%.       100km                    600s
+%
+
+\begin{table}
+
+\begin{center}
+\caption{Specifications of the experiments used most heavily in this study.  The length of computational time step is represented by `dt'.  In the Convection
+column, `prm'  indicates that convection is parameterized and `expl' indicates explicit convection.
+All of the experiments listed here were also run with the LWCRE turned off and are referred to with a LWCRE-off suffix in the text.
+For example, P100L LWCRE-off, etc.  }
+    \begin{tabular}{*{6}{c}}
+    \hline
+    \hline
+    \\
+ Name & Grid Spacing $(\mathrm{km})$ & dt (s) & Domain $ (\mathrm{km^2}) $& Length $(\mathrm{months}) $ & Convection     \\ \hline
+  P100L &  100      & 600    &   800 $\times$ 16000    &  60              & prm                   \\ 
+    \\
+  P100 &  100     & 600           & 800 $\times$ 4000     & 60            & prm                     \\  
+    \\
+  P25L &  25    & 600         & 200 $\times$ 16000      & 60             & prm                     \\  
+    \\
+  P25  &  25    & 600         & 200 $\times$ 4000      & 60             & prm                   \\  
+    \\
+ E25  &   25   & 600       & 200 $\times$ 4000      & 60             & expl                \\  
+    \\
+ E2   &   2   & 20       & 100 $\times$ 4000      & 6             & expl                   \\ 
+    \\
+ E1   &   1    & 5      & 10 $\times$ 4000      & 6             & expl                 \\  \hline
+
+    \end{tabular}\par
+    %\bigskip 
+    \label{tab:experimentspecs}
+\end{center}
+\end{table}
+
+One technique that has been commonly used to infer the influence of clouds on the atmosphere is to make the clouds invisible to the radiation.  
+The usual two-way interaction between clouds and radiation is thus broken and a useful diagnostic tool is created.  
+This method was originally pioneered by \citeA{Slingo_Slingo_1988} and \citeA{Randall_etal_1989}.  
+More recently, it has been implemented as part of the CFMIP series of experiments \cite{Stevens_etal_2012, Webb_etal_2017}.
+In the AM4 code, this is done separately for the longwave (LW) and shortwave radiation.  
+In this study we compare control experiments, in which clouds and radiation are fully interactive with experiments in which clouds are invisible to the LW radiation.  
+These experiments are referred to as Longwave Cloud Radiative Effect Off (LWCRE-off).  
+For the LWCRE-off experiments, both the LW and shortwave radiation are present and interact with 
+the atmospheric state, the clouds still precipitate and interact with the shortwave radiation.   
+Turning off the LWCRE would have a large impact on the surface budget of a coupled model.  
+However, because there is no land in our simulations and the SST is held fixed, the energetics of our experiments are not as
+strongly effected as might be expected.  Experiments with only a water surface at the lower boundary and 
+fixed SST are an ideal configuration to utilize the LWCRE-off configuration. 
+
+The experiments with 100km and 25km grid-spacing have been run for 5 years while the 
+1km and 2km experiments were run for 6 months.  Experiments with parameterized convection are labelled with a P prefix, followed
+by a number indicating the grid-spacing in kilometers while the experiments with explicit convection (no parameterized convection) will be 
+labelled with an E prefix, followed by the appropriate number.  Thus P25 refers to an experiment with parameterized convection using a 
+grid-spacing of 25km. 
+The naming convention for each of the experiments is shown in Table \ref{tab:experimentspecs}.   
+Throughout this paper the P100 and P25 experiments, with and without the LWCRE are referred to as `GCM-like' and
+`CRM-like'.  The GCM-like experiments only differ from traditional GCMs in the non-global domain and lack of rotation.  
+The CRM-like terminology acknowledges that this configuration 
+has a vertical resolution that is coarser than many CRMs, and uses the large-scale cloud scheme from the AM4.0/CM4.0 GCM.  
+  
+To examine the dependence of our results on domain size, as well as the fundamental role that the LW CRE plays in GCMs
+we run the fully parameterized experiments (P25 and P100) on a `small' and `large' domain.  The long dimension of the small domains is 4000 km and the long dimension of the large domain is 16000 km.  
+To explore the mock-Walker circulation in the context of both a GCM and a CRM we utilize 
+comparisons of the experiments with grid-spacings of 25km (P25 and E25), 2km (E2), and 1km (E1) all on a domain with the same long dimension 
+of 4000 km.  The experiments with a grid-spacing of 25km (P25 and E25) serve as a link between the GCM-like configuration and the CRM-like 
+configuration.  The only difference between these two experiments is that E25 has both the shallow and deep convective parameterizations turned 
+off so that all of the convection in that experiment is explicit, as it is in E2 and E1.  Domains with dimensions of 16000 km were judged too 
+costly for the 1km and 2km experiments.  
+
+The E1 and E2 simulations are in many ways similar to the configuration of so-called cloud resolving models.  
+In particular all convection is explicitly resolved, 
+and the threshold of grid-cell mean relative humidity which triggers new clouds is changed from the default value of 0.8 to 1.0.  
+While a grid spacing of 1 or 2km is clearly not small enough
+to resolve all clouds, it is small enough to resolve many clouds and cloud-systems.  
+The large-scale cloud scheme is based on the \citeA{Tiedtke1993} parameterization.  
+This was originally designed to be used with GCMs having a coarse grid-spacing and includes prognostic equations for both 
+cloud liquid water and cloud fraction.  
+However, we are not aware of a fundamental problem in using the Tiedtke scheme for large-scale clouds in a model with 1km grid-spacing.   
+The advantage of using the Tiedtke scheme is retaining the identical cloud scheme as is used in the parent GCM; the disadvantage is the greatly increased complexity of the 
+cloud computations relative to many other cloud resolving models.    
+
+\begin{table}
+\begin{center}
+\caption{Domain mean precipitation ($\overline{\rm{P}}$), outgoing longwave radiation 
+($\overline{\rm{OLR}}$), precipitable water ($\overline{\rm{PW}}$), and subsidence fraction (SF)  
+or fraction of domain that is subsiding at the 532 hPa level.
+Values in parenthesis correspond to LWCRE-off experiments.}
+    \begin{tabular}{*{5}{c}}
+    \hline
+    \hline
+    \\
+ Name &   $\overline{\rm{P}} (\mathrm{mm \,d^{-1}})$ & $\overline{\rm{OLR}} (\rm{W \, m^{-2}})$ & $\overline{\rm{PW}} (\rm{mm})$ & SF   \\ \hline
+  P100L   &  4.1 (3.5)   &  283.1 (286.9)  & 36.6 (31.3)  & 0.89 (0.61)      \\ 
+    \\
+  P100 &   3.9 (3.7)   &  283.2 (296.4)  & 28.0 (26.8) & 0.74 (0.73)           \\  
+    \\
+  P25L &   4.0 (3.8)  &  281.2 (290.7)   & 35.0 (32.9) & 0.78 (0.70)          \\  
+    \\
+  P25  &   3.8 (3.7)    & 282.9 (293.6)   & 27.4 (26.4) & 0.80 (0.74)          \\  
+    \\
+ E25  & 3.7 (3.5)    &   271.9 (286.8)   & 28.7 (27.3) & 0.72 (0.75)            \\  
+    \\
+ E2   &  3.1 (3.4)   &  266.2 (285.5)    & 27.0 (25.2) & 0.82 (0.75)           \\ 
+    \\
+ E1   &  3.3 (3.7)   &  269.3 (289.2)    & 27.3 (26.5) & 0.80 (0.80)         \\  \hline
+
+    \end{tabular}\par
+    %\bigskip 
+    \label{tab:experimentmeans}
+\end{center}
+\end{table}
+
+
+
+\section{Cloud Radiative Interactions and the Organization of a mock-Walker Circulation}
+
+
+The mock-Walker Circulation that emerges from these simulations is shown in Figures \ref{fig:rh_psi_P25vsE25} and 
+\ref{fig:precip_vertvel} to be characterized by a strong overturning circulation with precipitation focused over the warmer 
+SSTs and a humid boundary layer across the full length of the domain.    Superposing the circulation and relative 
+humidity (Figure \ref{fig:rh_psi_P25vsE25}) clearly shows the result of subsidence driven 
+drying over regions with cooler SST (at the edges of the domain) and the tropospheric moistening from ascending parcels which 
+originate in the boundary layer over the region of high SST (in the center of the domain).   
+To illustrate some of the sensitivities to convective parameterization and the interaction between clouds, radiation, and the large-scale 
+circulation we compare the P25 experiment with analogous experiments in which the longwave CRE is turned 
+off (P25 LWCRE-off, middle 
+panels of Figure \ref{fig:rh_psi_P25vsE25}) and in which the convection is made explicit by turning off the convective 
+parameterization (E25, right panels of Figure \ref{fig:rh_psi_P25vsE25}).  
+The circulation is illustrated by the combination of 
+the mass streamfunction in Figure \ref{fig:rh_psi_P25vsE25} and the vertical velocity in Figure \ref{fig:precip_vertvel}.   
+The lower panels of Figure \ref{fig:rh_psi_P25vsE25} show high concentrations of condensate in the mid-troposphere over 
+the warmer SSTs, while the regions with subsiding circulations are dry ($< 20\% RH$) above about $900\, \rm{hPa}$.  
+Two distinct circulation cells are present with one below, and one above $500 \, \rm{hPa}$.   
+This state of deep overturning circulation with convection 
+and precipitation concentrated in the region of ascent and a dry troposphere in the regions of descent is common
+to the Walker circulation, tropical two-box models \cite<e.g., >[]{Pierrehumbert_1995, Larson_etal_1999, Bretherton_etal_2006}, and 
+experiments of radiative convective equilibrium which equilibrate to a state with deep-overturning circulations 
+and convective aggregation \cite<e.g., >[]{Bretherton_etal_2005}.
+
+\begin{figure}
+  \centering
+      \includegraphics[angle=90,width=0.96\columnwidth]{walkerfigs/rh_psi_cond_25km_6pan_new.eps}
+      \caption{The equilibrated state of the Walker cell for three configurations with a grid-spacing of 25km on a domain of 200 $\times$ 4000 $\, \rm{km}^2$.
+      Shown in the top panels is the relative humidity (shading) and mass streamfunction (black contours).
+      The same contour interval for the mass streamfunction ($6 \times 10^9$ kg/s) is used in all panels.
+      The lower panels show the total (liquid + ice) condensate (g/kg).  
+      Deep and shallow convection are fully parameterized (P25) in the panels on the left, the center panels show P25 LWCRE-off, 
+      and the experiment with LWCRE on, but the convective
+      parameterization turned off is on the right (E25).}
+  \label{fig:rh_psi_P25vsE25}
+\end{figure}
+
+
+When the coupling between the circulation and clouds is broken by making the clouds invisible to the 
+LW radiation, the atmospheric state is more symmetric about the maximum SST and the weaker circulation
+is more spread out horizontally.   The mass streamfunction and vertical velocity both show the 
+P25 (Figure \ref{fig:rh_psi_P25vsE25}, left panels; Figure \ref{fig:precip_vertvel}) experiment to have 
+a stronger, more concentrated overturning circulation than either E25 (right panels) or P25 LWCRE-off (center panels).   
+The control GCM experiment (P25) also has higher RH and more condensate in the convective
+region and a dryer subsidence region, relative to the P25 LWCRE-off and E25 experiments. 
+Averaged over the full domain, the P25 case with parameterized convection results in a dryer atmosphere with less condensate (both liquid and ice). 
+This default configuration in which the clouds interact with the LW radiation results in a stronger,
+spatially concentrated circulation and will be discussed further in later sections (also seen Figures 4, 5, 9 and 10).
+Active LWCRE leads to lower values of domain mean OLR and higher domain mean precipitable water (PW) in all cases (Table \ref{tab:experimentmeans}). 
+
+Interactions between clouds and radiation play a dominant role in determining the fundamental  
+characteristics of our system.  The domain mean precipitation ($\overline{\rm{P}}$) provides one example of this.  
+Because of the tight constraints that connect $\overline{\rm{P}}$, atmospheric condensational heating, and 
+the total radiative cooling, the time evolution of the precipitation is a useful measure of whether a model has 
+reached a state of stationarity, or statistical balance.  Figure \ref{fig:precip_dom_mn} demonstrates that this balance is reached after about 30 
+days for the E2, and E1 simulations, and after roughly 100 days for the P25 and P100 simulations.  Although the variability
+of  $\overline{\rm{P}}$ is fairly large (1-2 mm/d), after the initial adjustment period of a few months, the experiments are steady in time.  This
+is demonstrated in Figure \ref{fig:precip_dom_mn} with the colored circles which show the mean values of $\overline{\rm{P}}$ over the last 4 years (5 months) of the experiments for the GCM-like (CRM-like) experiments.   
+After the initial adjustments
+the simulations all oscillate about mean precipitation values which tend to increase with the grid-spacing (Table \ref{tab:experimentmeans}).   
+Despite the same boundary conditions and model base, these experiments have a large range of domain mean precipitation 
+(Table \ref{tab:experimentmeans}) that varies by as much as 0.6 $\rm{mm/d}$ (3.5-4.1 in parameterized experiments; 3.1-3.7 in explicit experiments).  
+Note that the GCM-like experiments have a larger $\rm{\overline{P}}$ than the CRM-like experiments, and that the
+LWCRE leads to larger $\rm{\overline{P}}$ in the GCM-like experiments but smaller $\rm{\overline{P}}$ in the CRM experiments.  
+This will be discussed further in section 5. 
+The large oscillations in $\overline{\rm{P}}$ shown in Figure \ref{fig:precip_dom_mn} are similar to those noted in previous studies 
+\cite{Silvers_etal_2016, Patrizio_Randall_2019}.
+Differences in $\rm{\overline{P}}$ can be understood as a consequence of the differences in upper level cloud fraction 
+and the surface energy budget and will be discussed further in section 5.   
+
+
+One of the most prominent features of our GCM-like simulations is an asymmetry (relative to the 
+symmetric SST distribution) in both the time-dependent and steady-state solutions.  
+This asymmetry is particularly apparent in the P25 experiment on the small domain but is also present on larger domains and 
+with a grid-spacing of $100 \, \rm{km}$ (Figures  \ref{fig:precip_vertvel}, \ref{fig:domdep} and  \ref{fig:conv_vs_ls}). 
+The steady-state precipitation maximum is located  not over the warmest SST but is shifted to slightly cooler temperatures.  
+This asymmetry is present in the vertical velocity, mass circulation, relative humidity, specific humidity, and radiative heating.  
+In the Hovm{\"o}ller diagrams (Figures \ref{fig:domdep} and \ref{fig:domdep_lwoff}), the precipitation appears to be averse 
+to residing over the SST maximum.  
+For the P25 case shown in Figure \ref{fig:rh_psi_P25vsE25} a strong ($1 \, \rm{m \, s^{-1}}$) domain
+mean shear develops above about 500 m which shifts the precipitation and circulation off center for years at a time.  
+When the convective parameterization is turned off (E25), the overturning circulation 
+becomes weaker and broader (seen in vertical velocity, and the mass streamfunction, Figures \ref{fig:rh_psi_P25vsE25} and \ref{fig:precip_vertvel}), 
+and the precipitation, cloud fields, and circulation reside over the SST maximum (but only for about 1 year before the variability 
+increases).    
+While the parameterized convection plays a large role in driving this asymmetry, it is not purely a 
+result of the convective parameterization, but also due to an interaction between the convective 
+parameterization and the LWCRE.   The degree to which this asymmetry influences the comparison with other 
+experiments is unclear.     
+
+
+\begin{figure}
+  \centering
+      \includegraphics[width=0.8\columnwidth]{walkerfigs/PrecipVertVelocity_LWCRE_onoff.eps}
+  \caption{Precipitation (top) and vertical velocity (bottom) at approximately 530 hPa for P100, P25, E2, and E1 experiments.  
+  The data have been averaged over the short horizontal dimension of the channel and over the 
+  equilibrated part of the experiments.  Control configurations with default model physics are on the 
+  left.  On the right are the corresponding experiments with the longwave cloud radiative effect turned
+  off (LWCRE-off).}
+  \label{fig:precip_vertvel}
+\end{figure}
+%
+% below shows that the circulation extremes decrease when the lw cre is switched off.  the case with a 
+% grid-spacing of 25 km shows the largest difference 
+%
+%% max/min values for the stream function with lwcre off:
+%(0)	max/min of psiplot ensind  is: 0.3477345977293868 and: -0.2115510906212598   diff = 0.56
+%(0)	max/min of psiplot1 is: 0.3195050101301776 and: -0.2795603759630235             diff = 0.60
+%(0)	max/min of psiplot2 is: 0.3551683771471268 and: -0.3245916357825396             diff = 0.68
+%
+%% max/min values for the stream function with lwcre on:
+%(0)	max/min of psiplot ensind  is: 0.1346705118433919 and: -0.6774837967222883    diff = 0.81
+%(0)	max/min of psiplot1 is: 0.301707822836468 and: -0.3661587052771586                diff = 0.67
+%(0)	max/min of psiplot2 is: 0.4634904466711686 and: -0.3170573366946793               diff = 0.78
+
+\begin{figure}
+  \centering
+      %\includegraphics[width=0.8\columnwidth]{walkerfigs/Precip_DMN_4models_1yr.eps}
+      \includegraphics[width=0.8\columnwidth]{walkerfigs/DomMnPrecip.eps}
+  \caption{Domain mean precipitation as a function of time.  All data have been smoothed twice with a 9-day running mean filter.  
+  Solid lines are the control experiments, dashed lines show the LWCRE-off experiments.  All data is shown for the E1 and E2 experiments
+  while for P25 and P100 only the first two out of five years is shown.  The dots at far right show the time mean values for the last 4 years (P25, P100) and last 5 months (E1, E2).  Filled (hollow) dots show values from control (LWCRE-off) experiments. }
+    \label{fig:precip_dom_mn}
+\end{figure}
+
+One of the simplest measures of convective aggregation and the large-scale circulation is the subsidence fraction (SF), the fraction of the domain 
+in which the mid-tropospheric air is subsiding \cite{Coppin_Bony_2015}.  
+As convection becomes more organized, or aggregated, the SF will increase.  For an overturning circulation a contraction of the convective 
+region should result in a larger subsidence fraction.  
+This is precisely what we see in Table \ref{tab:experimentmeans}.  For each of our experiments with LWCRE-on the SF is larger than 
+or equal to the case with LWCRE-off (with the exception of E25).   
+While our mock-Walker circulation is distinct from radiative convective equilibrium (RCE) and the resulting spontaneous self-aggregation, our 
+region of persistent deep convection clearly corresponds to a state of aggregation. 
+Using a mock-Walker circulation allows one to study controlled convective aggregation rather then spontaneous convective self-aggregation. 
+Previous studies have shown a dependence of aggregation 
+on temperature \cite{Khairoutdinov2010, Wing2014, Cronin2017}, Table \ref{tab:experimentmeans} illustrates how much the aggregated 
+state can vary among experiments with identical SST.  Having a prescribed SST warm 
+patch ensures that the simulations will be `aggregated' to some degree.  
+Given identical SSTs, the  range of different SFs provide a measure of variability that is driven entirely by the interactions between 
+convection, radiation, and the large-scale circulation. 
+
+
+\section{The Influence of Domain Size on Low-level Clouds and the Large-scale Precipitation}
+
+
+The evolution in time of the precipitation field illustrates how much the spatial distribution can vary as a 
+function of domain size, parameterization of convection, and the effect of the LW radiation due to clouds. 
+Shown in Figures {\ref{fig:domdep}} and {\ref{fig:domdep_lwoff}} are Hovm{\"o}ller plots of precipitation after 
+averaging along the short horizontal dimension.  The four panels show simulations with two grid-spacings 
+($25\, \rm{km}$ and $100\, \rm{km}$) using two different domain sizes (long edge length of $4,000\, \rm{km}$ and $16,000\, \rm{km}$).
+Figure {\ref{fig:domdep}} shows the control GCM-like experiments and Figure  {\ref{fig:domdep_lwoff}} shows the equivalent simulations with LWCRE-off.    
+ Previous studies of RCE
+\cite{Bretherton_etal_2005, Bretherton_etal_2006, Muller2012, Jeevanjee2013, Silvers_etal_2016, Dixit_etal_2018, Patrizio_Randall_2019}
+have documented sensitivities of the equilibrated state to domain size.  
+We have in most cases chosen to keep the long edge length fixed at $4,000\, \rm{km}$. 
+The analysis of the previous, and of the next section focuses on results from 
+experiments using a domain with a long edge length of $4,000 \, \rm{km}$.  However, when comparing those results
+to experiments with a long edge length of $16,000 \, \rm{km}$, we find interesting sensitivities to the domain size that are described in this section. 
+
+At all resolutions the Hovm{\"o}ller plots show that the LWCRE acts to concentrate the precipitation over a smaller geographic extent.   
+The structure of the precipitation changes more 
+as a function of domain size than it does as a function of resolution. 
+On the large domains, the difference between experiments with and without LWCRE is extreme (compare Figure \ref{fig:domdep}a,b to Figure \ref{fig:domdep_lwoff}a,b).  
+In contrast to the control experiments in Figure \ref{fig:domdep} which all show a narrow region of strong 
+precipitation meandering within about 500 km of the SST maximum at the center of the domain,  the large domain experiments 
+without the LWCRE have an 8000 km wide region in which the precipitation consistently develops (Figure {\ref{fig:domdep_lwoff}).  
+Smaller cells and lines of precipitation develop within this large area with no apparent preference to settle
+over the center of the domain where the SST is a maximum.  
+There is also a dramatic change in the distribution of precipitation on the $4,000\, \rm{km}$ domain simulations after almost 2 years.   
+The domain mean precipitation does not significantly change in these cases, only the spatial structure. 
+
+An additional unexpected change that results from increasing the domain size is an upward shift of the cloud fields.  
+The low-level condensate has a cloud base that decreases in magnitude and shifts from  near 900 hPa in the small domain (thin lines, Figure \ref{fig:TotCond_P25P100}) to between 700-800 hPa in 
+the large domain (thick lines) simulations.
+There is also a vertical shift in the upper-level ice condensate, but it is less pronounced.  
+As the domain size increases, so too does the domain mean precipitable water ($\overline{\rm{PW}}$) which varies by as much as 30\% among the experiments (Table \ref{tab:experimentmeans}).   
+Smaller domains (1,024 km compared to 4,096 km wide) were found to have a more focused ascent region, larger precipitation rates, and less low-level clouds in the CRM simulations of \citeA{Bretherton_etal_2006}.
+In contrast, here smaller domains have more low-level clouds and slightly less precipitation rates(Table \ref{tab:experimentmeans}, 
+Figure \ref{fig:TotCond_P25P100}).     
+
+
+\begin{figure}
+   \includegraphics[width=0.95\columnwidth]{walkerfigs/hov_precip_lwon_huge.eps}
+  \caption{Evolution of precipitation through the first 3 years of simulation for experiments with a grid spacing of
+  25km and 100km.  Panel A shows the 100km experiment on the large domain (P100L); 
+  B, 25km on large domain (P25L); C, 100km on small domain (P100); and D, 25km on small domain 
+  (P25).  For each resolution, the only difference between the experiments shown is a long edge length of 
+  16,000 km or 4,000 km.  All cases have an SST of 301 K at the center and 297K at the edges.  
+  The plotted contour values are: 1,5,10,15,20,30,40,50,60,70,80,90.  Data have been averaged over the short horizontal dimension.}
+  \label{fig:domdep}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=0.95\columnwidth]{walkerfigs/hov_precip_lwoff_huge.eps}
+  \caption{Identical to previous figure, except that the clouds do not interact with the longwave radiation; the LWCRE is off.}
+  \label{fig:domdep_lwoff}
+\end{figure}
+
+\begin{figure}
+  \centering
+       \includegraphics[width=0.45\columnwidth]{walkerfigs/Cond_Walker_P100vsP25_lgvsm_lwoff.eps}
+          \caption{Domain mean total condensate (liquid + ice; grams/kilogram) for P100 (red) and P25 (yellow) on the domain 
+          with a long dimension of 16,000km (thick) and 4,000 (thin).  Solid lines show experiments with LWCRE on
+          and dashed lines the LWCRE-off experiments.}
+  \label{fig:TotCond_P25P100}
+\end{figure}
+
+
+The domain mean total precipitation is constrained by the radiative cooling of the atmosphere.  
+However, in models with the convection parameterized, the 
+total precipitation is composed of precipitation from the convection scheme and the large-scale cloud scheme. 
+The relative contribution of each component is not well constrained and \citeA{Held2007} have shown 
+that the fraction of the precipitation that is due to the large-scale cloud scheme is closely linked 
+to low-cloud cover and total condensate.  
+The distribution of convective and large-scale precipitation indicates how the condensational heating
+in a GCM is being distributed among the parameterizations, and what is triggering the precipitation.  
+Precipitation from each of these two components is shown in Figure \ref{fig:conv_vs_ls} as a function of 
+resolution and domain size.  In the regions of large-scale ascent, most of the precipitation derives 
+from the large-scale cloud scheme.  Following the terminology of \citeA{Held2007} we could say that most 
+of the precipitation is coming from `gridpoint storms' in which the upper level moisture is being supplied not 
+by the convective parameterization but from the boundary layer as a result of large-scale upwelling.
+We also see that the LWCRE (solid lines) dramatically increases the large-scale precipitation.  
+The LWCRE has a much smaller effect on the magnitude of the convective precipitation but does act to spatially concentrate it.  
+With the exception of the P100L LWCRE-off experiment, the convective precipitation produces relatively little of the total precipitation.  
+The dramatic dependence on domain size of the precipitation field that is 
+seen in Figure \ref{fig:domdep_lwoff} corresponds to a decrease in the large-scale precipitation of about 65\% in the P25L case
+and an almost complete elimination of the large-scale precipitation in the P100L case.    
+The fraction of precipitation that is due to the large-scale cloud scheme was linked to the low-level cloud radiative
+effect in \citeA{Held2007}. Our results show that this fraction is indeed tied to the low-level cloud fraction  
+and demonstrate that it is through the LW cloud radiative effect that this connection is enabled.
+The fact that the partitioning of precipitation by the convective and large-scale 
+parameterizations depends on both the size of the domain and the LW CRE 
+could imply that the changes of the low-level clouds are being driven by 
+sensitivities of the parameterized physics.   
+The low-level clouds are strongly influenced by both the size of the domain and by the LW CRE. 
+
+\begin{figure}
+  \centering
+      \includegraphics[width=0.96\columnwidth]{walkerfigs/Conv_vs_LS_Precip.eps}
+  \caption{Precipitation due to the large-scale (blue) cloud scheme and to the convective 
+  parameterization (black).  
+  Panels on the left show large domains with a long edge width of 16,000 km and
+  panels on the right show domains with a long edge width of 4,000 km.  LWCRE-off experiments are shown with dashed lines.  }
+  \label{fig:conv_vs_ls}
+\end{figure}
+
+
+
+\section{From a General Circulation to Cloud Resolving Model: Dependence on Resolution}
+
+\begin{figure}
+  \includegraphics[width=0.96\columnwidth]{walkerfigs/hov_precip_25vs2vs1_6mn_huge.eps}
+  \caption{Evolution of precipitation through the first 6 months of simulation for (a) the 25km control case (P25), 
+  (b) 25km case with no parameterized convection (E25), (c) 2km control (E2), and (d) 1km control (E1).  
+  All panels have a long edge width of 4,000 km with the center of the domain having a prescribed SST of 301 K and the edges 297 K.  
+  Data have been averaged over the short horizontal dimension.} 
+  \label{fig:hov_4mods_6mn}
+\end{figure}
+
+
+We now use the mock-Walker circulation to compare GCM-like simulations to CRM-like simulations.  
+This section focuses on simulations with grid-spacing of 1km, 2km, and 25km all on a domain with the width of 4,000 km for the long edge.  
+The models agree on the basic circulation pattern and the spatial distribution of mid-tropospheric condensate.  
+However, the E25/P25 simulations produce 4 to 5 times as much low-level cloud and 
+condensate as E2/E1 in the subsiding regions.   As a result the models have a different response 
+to the LWCRE.  In the atmospheric boundary layer the differences among the models of the wind, enthalpy flux, and 
+temperature result in different spatial distributions and amounts of precipitation in the equilibrated state.  
+
+Notable differences in the structure of the precipitation that result from the overturning circulation at different resolutions are shown in Figure \ref{fig:hov_4mods_6mn}.  
+Shown are 180 days of precipitation from the P25 (left to right), E25, E2, and E1 simulations.  
+As the resolution increases the distribution of precipitation becomes broader, more consistently centered over the SST maxima, and has 
+lower maximum precipitation rates.  
+Both the P25 and E25 simulations show more variability at later times compared to these 
+first 180 days (similar to what is seen in Figures \ref{fig:domdep}  and \ref{fig:domdep_lwoff} for the P25 and P100 LWCRE-off).  
+The simulations with explicit convection at resolutions typical of cloud-resolving models 
+(E2, E1) show little aversion to the precipitation maximum occurring over the maximum in SST.
+Relative to the P100, P25 and E25 simulations, the cloud resolving simulations are able to maintain a smoother distribution of 
+precipitation over a broader range of SST values.  Complex patterns of precipitation over a fixed sinusoidal or Gaussian SST distribution 
+have been noted many times in previous literature \cite{Grabowski2000,Bretherton_etal_2006, Wofsy_Kuang_2012,Jeevanjee_etal_2017}. 
+The irregularities have tended to be symmetric about the SST maximum.  This is broadly consistent 
+with our simulations when the convection is entirely explicit (E25, E2, and E1), but is strikingly different than for the P25 and P100 experiments. 
+
+\begin{figure}
+  \centering
+      \includegraphics[angle=90,width=0.96\columnwidth]{walkerfigs/rh_psi_cond_E25E2E1_lwon_new.eps}
+      \caption{The equilibrated state of the Walker cell as a function of resolution.  
+      Experiments shown are E25 (left), E2(center), and E1(right). Top panels show the 
+      steady state relative humidity (shading) and mass streamfunction (black contours)
+      while bottom panels show the total condensation (liquid + ice).  
+      All panels use the same contour interval for the 
+      mass streamfunction (kg/s).}
+  \label{fig:rh_psi_P25E2E1}
+\end{figure}
+
+
+\begin{figure}
+  \centering
+      \includegraphics[angle=90,width=0.96\columnwidth]{walkerfigs/rh_psi_cond_E25E2E1_lwoff_new.eps}
+          \caption{Same as previous figure except with the longwave CRE turned off.}
+  \label{fig:rh_psi_P25E2E1_lwoff}
+\end{figure}
+
+
+The influence of resolution on the atmospheric state can be clearly seen in the two-dimensional structure 
+of circulation and humidity (Figures \ref{fig:rh_psi_P25E2E1} and \ref{fig:rh_psi_P25E2E1_lwoff}).
+Perhaps the most obvious similarity is the double celled structure in the mass streamfunction and the most 
+obvious difference being the humidity in the center of the domains where the RH differs by as much as 40\%. 
+All experiments show a mid-tropospheric relative humidity minimum over the cooler SSTs where subsidence 
+dominates.  The E25 experiment has a fairly symmetric double celled structure in stark contrast to the irregular circulation 
+that is present in the P25 experiment (Figure \ref{fig:rh_psi_P25vsE25}). 
+A small third cell has developed in the boundary layer of the 1km experiment.   The high resolution experiments also have 
+higher amounts of condensate throughout the troposphere, and much higher relative humidity 
+above 200 hPa. 
+ 
+Compared to E25, the E1 and E2 experiments have stronger deep overturning circulations and substantially 
+more condensate aloft above the warm patch.    It is also apparent in Figures 
+\ref{fig:rh_psi_P25E2E1} and \ref{fig:rh_psi_P25E2E1_lwoff} that the condensate below 800 hPa 
+decreases with increasing resolution.  
+This is consistent with an overturning circulation that 
+strengthens as the resolution increases and transports more moisture from the low-levels to the 
+mid-troposphere.  It is also consistent with weaker mixing from shallow clouds with decreased resolution as
+discussed in \citeA{Pauluis2006}.   Figure \ref{fig:rh_psi_P25E2E1_lwoff}, with LWCRE-off, shows greater asymmetries 
+and generally weaker circulations below about 500 hPa.  
+When the clouds and radiation directly interact with each other the experiments have a better
+organized and stronger circulation below 500 hPa.  Figures \ref{fig:rh_psi_P25E2E1} and 
+\ref{fig:rh_psi_P25E2E1_lwoff} also show that the E2 and E1 simulations are more 
+similar when the clouds and radiation interact than they are with LWCRE-off.  The subsidence 
+region drying and condensate aloft in the upwelling region have a clearer dependence on resolution for the
+LWCRE-off experiments.  This suggests that the interactions between clouds and radiation help the 
+atmosphere to converge towards a particular state that is less dependent on resolution.  
+  
+The domain mean condensate is closely related to the distribution of clouds and the flow of energy through the atmosphere.  
+It provides clues about the strength of convection and the vertical mass transport.     
+Figure \ref{fig:TotCond} shows the domain mean condensate for E25, E2, and E1
+(solid lines) and the corresponding experiments with the LWCRE-off (dashed lines).  Similar profiles for the experiments
+with parameterized convection were discussed in the previous section (Figure \ref{fig:TotCond_P25P100}).  
+The GCM-like P100, P25, and E25 experiments have much higher values of low-level liquid condensate while the CRM-like 
+E2 and E1 experiments have much higher values of upper level ice condensate.  
+Although our experiments differ from RCE, the results are consistent with \citeA{Pauluis2006} who showed that for 
+decreasing resolution an RCE model had a moist bias in the sub-cloud layer and a dry bias in the troposphere above.  
+ 
+\begin{figure}
+  \centering
+       \includegraphics[width=0.45\columnwidth]{walkerfigs/Cond_Walker_E25E2E1_lwoff.eps}
+          \caption{Domain mean total condensate (liquid + ice; grams/kilogram) for P25 (thin yellow), E25 (yellow), 
+          E2 (blue), and E1 (green).  Solid lines show experiments with LWCRE on,
+          dashed lines show the LWCRE-off experiments.  All experiments have explicit convection.}
+  \label{fig:TotCond}
+\end{figure}
+ 
+ 
+The LWCRE plays a major role in determining the equilibrium RH, total condensate, and LW radiative heating of the troposphere.  
+This is highlighted by comparing experiments with and without the LWCRE. 
+The upper panels of Figures \ref{fig:rh_psi_P25E2E1} and \ref{fig:rh_psi_P25E2E1_lwoff} show that the 
+interactions between LW radiation and clouds lead to an enhanced drying of the troposphere in regions of subsidence (relative to LWCRE-off).  
+This is especially true for the E1 and E2 simulations.  
+Interactive LWCRE leads to less upper level ice-condensate for our CRM experiments
+with the effect increasing as the resolution increases (Figure \ref{fig:TotCond}).  
+The opposite occurs with GCM-like experiments (Figure \ref{fig:TotCond_P25P100}) for which interactive LWCRE increase 
+the amount of upper level ice-condensate.    
+Below about 700 hPa turning off the LWCRE leads to a strong decrease in condensate
+in the GCM experiments, but a negligible decrease in the condensate of the CRMs.    
+The profiles of diabatic cooling are similar among all LWCRE-off experiments (Figure \ref{fig:cf_tdtlw}).  
+But when the LWCRE is on, the GCM-like experiments have up to twice as much diabatic cooling as the CRM-like experiments below 850 hPa.
+The manifestation of interactions between clouds and radiation as indicated
+by these characteristics differ dramatically between the GCM and CRM experiments.   
+
+\begin{figure}
+  \centering       
+    \includegraphics[width=0.96\columnwidth]{walkerfigs/lowlevel_New.eps}
+    \caption{Low-level structure and domain mean wind shear for simulations with explicit convection.  
+    The surface enthalpy flux (a) is the latent plus sensible heat flux.  Panels b and c show 
+    the equivalent potential temperature (b) and zonal wind (c) at the lowest model level in the atmosphere.  Panel 
+    d shows the domain mean zonal wind throughout the depth of the domain.}
+    \label{fig:enthalpy}
+\end{figure}
+
+Despite a fairly regular distribution of precipitation around the SST maximum for experiments with increasing resolution, the 
+surface enthalpy flux (latent plus sensible heat fluxes) reveals large differences in the symmetry of the near surface energetics.   
+Figure \ref{fig:enthalpy} shows the surface enthalpy flux, 
+the equivalent potential temperature, and the u-component wind field for E1,E2, and E25.  
+Over the SST maximum, E25 has a surface enthalpy flux that is $60 \, \rm{W/m^2}$ 
+larger than that of the E1 experiment, and the E1 experiment has an irregular pattern of enthalpy flux in the middle
+half of the domain.  These differences in magnitude and regularity are apparently due to differences in the low-level 
+wind speeds among the experiments.  For the LWCRE-off experiments, the difference in the enthalpy flux between E25 and E2/E1 
+over the warmest SSTs is reduced from $60 \, \rm{W/m^2}$ to about $20 \, \rm{W/m^2}$ and the enthalpy
+flux for E1 and  E2 are very similar.   Thus even for the case of prescribed SSTs and no
+land surface the interactions between clouds and the LW radiation have a massive influence on the 
+surface energy budget.
+
+
+It is also interesting to note that despite stronger low-level winds, E25, E2, and E1 all have a weaker surface
+enthalpy flux when the clouds and radiation are allowed to interact.   As represented 
+by bulk parameterizations, both the sensible heat flux and the latent heat flux are directly proportional to the 
+magnitude of a measure of the low-level wind.  However, the sensible and latent heat fluxes are also 
+proportional to the gradient of moisture and temperature between the surface and lowest atmospheric level.    
+E25, E2, and E1 all show an increased amount of specific humidity (not shown) in the lowest atmospheric 
+model level that is reflected in the equivalent potential temperature (Figure \ref{fig:enthalpy}b).  This 
+implies that the vertical gradient of moisture and temperature is smaller when the LWCRE is active and thus accounts 
+for the lower surface enthalpy flux relative to the LWCRE-off experiments.         
+It is also worth noting that in contrast to the P25 case which has strong domain mean shear, E25 has less domain 
+mean wind shear then E1.  
+
+
+We now turn our attention to the clouds in the regions of subsidence over the cooler SSTs.
+Figure \ref{fig:cf_tdtlw} shows E2 to have the largest (about 17\%) upper level mean cloud
+fraction in the subsidence region, with the E1 experiment having the next largest cloud fraction (10\%), followed by 
+P100, E25, and P25 (3-5\%).  As noted in the discussion of the total condensate, the CRM-like models 
+produce large values of upper-level cloud with minimal low-level clouds while the GCM-like models
+do the opposite with large amounts of low-level clouds and 5\% or less of upper level-couds.   
+The right panel of Figure \ref{fig:cf_tdtlw} shows that the differences among the upper-level clouds only slightly shifts the radiative cooling in the
+upper troposphere, but the differences in low-level clouds correspond to a strong change of the radiative cooling around 900 hPa. 
+
+
+\begin{figure}
+  \centering
+      \includegraphics[width=0.96\columnwidth]{walkerfigs/CloudFractdtRad_lwcre.eps}
+  \caption{Cloud fraction (CF) and temperature tendency due to longwave radiation (tdtlw).  Profiles were computed in the 
+  subsidence regions and are shown for the control (LWCRE-on) and LWCRE-off experiments.}
+  \label{fig:cf_tdtlw}
+\end{figure}
+
+An interesting point that emerges from the domain mean values of precipitation ($\overline{\rm{P}}$, see Table \ref{tab:experimentmeans}) 
+is that the sign of the response to LWCRE is not the same between CRM and GCM experiments.
+When clouds are not allowed to interact with the LW radiation, the atmosphere 
+emits more radiation to space, as evidenced by larger values of $\overline{\rm{OLR}}$ 
+for all LWCRE-off experiments.  Atmospheric radiative cooling can be thought of 
+as a proxy for the mean precipitation because the cooling is usually balanced primarily by 
+condensational heating.  Larger values of $\overline{\rm{OLR}}$ would then correspond to 
+larger values of $\overline{\rm{P}}$.  This is clearly not the case for the E25, P25, and 
+P100 experiments.   The domain mean precipitation rates decrease despite an increased 
+amount of atmospheric cooling.  The implication is that the requisite atmospheric heating 
+must come from a process other than condensation.  
+
+Examining the energy budget of the surface and the role played by the low-level clouds
+reveals the source of the extra atmospheric heating for the E25, P25, and P100 experiments.  
+Prescribed SST generates a constant upward flux of LW radiation.  
+The upward flux of sensible heat flux will be mostly fixed (barring variations in surface
+wind) because changes in the downward flux of solar radiation will not warm the surface.   
+Low-level clouds serve as a significant source of LW radiative cooling for the atmosphere (Figure \ref{fig:cf_tdtlw}).  
+Making these clouds invisible to radiation creates a source of effective atmospheric warming by removing a source of atmospheric energy loss.  
+Invisible low-level clouds also allow the upwelling LW flux of radiation to play a larger role in warming the atmosphere.
+These two factors more than compensate for the increased OLR at the TOA of the LWCRE-off experiments.
+There is an increase in atmospheric warming on the order of $20 \, \rm{W \,m^{-2}}$ for the LWCRE-off experiments and 
+thus additional condensational heating is not needed to balance the increase of OLR. 
+Thus $\overline{\rm{P}}$ actually decreases (Table \ref{tab:experimentmeans}).   
+These results for E25, P25, and P100 are consistent with \citeA{Popp_Silvers_2017}  who 
+showed less condensate in the atmosphere and much less precipitation 
+(at the equator) for LWCRE-off experiments (see their Figure 1).  
+The large decrease of low-level clouds also leads to an increase of downward shortwave radiation at the surface.  
+Because of the low albedo of water this only slightly increases the fluxes of reflected shortwave radiation (about $2 \, \rm{W \,m^{-2}}$) 
+and contributes minimally to heating the atmosphere.
+With an interactive surface, the surface temperature would be influenced
+by the downward flux of both LW and shortwave radiation that a change of cloud fraction would lead to.   
+
+
+In contrast to the E25, P25, and P100 experiments just discussed, 
+E1 and E2 have larger $\overline{\rm{P}}$ for the LWCRE-off experiments.  This can be explained as follows.  
+One of the primary methods by which the LWCRE influences the atmosphere is by 
+heating the atmosphere in the region between the clouds and the surface.  
+Larger values of ice condensate and upper-level cloud fraction as seen in the E2 and E1 experiment 
+(Figure \ref{fig:TotCond}) therefore imply a larger atmospheric heating due to the CRE relative to the 
+E25, P25, and P100 experiments in which there are fewer clouds aloft (Figures \ref{fig:TotCond}, 
+\ref{fig:TotCond_P25P100}, and \ref{fig:cf_tdtlw}).  When the warming effect of the upper level clouds 
+in the E1 and E2 experiments is removed in the LWCRE-off experiments the energy balance of 
+the atmosphere is maintained through an increase of latent heating and subsequent increase 
+of precipitation (Table \ref{tab:experimentmeans}).  
+
+These experiments provide insight into the different mechanisms by which the clouds in GCMs and CRMs
+interact with LW radiation in the atmosphere.  Because there are so many more low-level clouds in 
+the GCM-like experiments there is a strong response to upwelling radiation from the surface.  In contrast, 
+the abundance of upper-level ice condensate, and lack of low-level condensate in the CRM-like experiments 
+results in the primary interaction between clouds and radiation being in the atmosphere below the upper level clouds.       
+
+ 
+
+\section{Summary and Discussion} 
+In summary, this section lists some of the main ways in which the LWCRE and the grid spacing influence
+the clouds, the circulation, and the energetics of the mock-Walker circulation.   
+%Some, but not all of these points have been noted by previous studies.   
+The impacts (relative to the LWCRE-off experiments) of the interaction between clouds and the longwave radiation 
+(LWCRE) include the following: 
+
+\begin{itemize}
+  \item An increase of $\overline{\rm{P}}$  for the P100,P25 and E25 experiments.
+  \item A decrease of $\overline{\rm{P}}$  for the E1 and E2 experiments.
+  \item The horizontally oriented low-level circulations strengthen, and the regions of high precipitation are more concentrated  
+  in geographic space (Figures \ref{fig:rh_psi_P25vsE25}, \ref{fig:rh_psi_P25E2E1} and \ref{fig:rh_psi_P25E2E1_lwoff}).  
+  \item The surface enthalpy flux decreases by tens of $\rm{W m^{-2}}$ and is much more variable among the models over the warm patch (Figure \ref{fig:enthalpy} a).
+  \item The spatial gradients of $\theta_e$ (Figure \ref{fig:enthalpy} b), the specific humidity, temperature, and virtual temperature 
+  (not shown) increases on the lowest atmospheric level.  
+  \item When convection is parameterized the total domain mean condensate increases at all heights 
+  (Figure \ref{fig:TotCond_P25P100}), in contrast to when the convection is explicit and 
+  the condensate aloft decreases (Figure \ref{fig:TotCond}).    
+\end{itemize}
+
+Relative to simulations with a grid-spacing of $100 \textrm{km}$ and $25 \textrm{km}$, the $1 \textrm{km}$ and 
+$2 \textrm{km}$ experiments have the following characteristics: 
+\begin{itemize}
+  \item Overturning circulations (as measured by vertical velocity) are stronger and more consistently centered 
+  over the maximum of SST (Figure \ref{fig:precip_vertvel}).  
+  \item   
+  Between 300-800 hPa in the upwelling regions the E1 and E2 
+  models have a relative humidity 
+  as much as 50\% larger than the lower resolution simulations (Figures \ref{fig:rh_psi_P25vsE25} and \ref{fig:rh_psi_P25E2E1}).  
+  \item Above about 600 hPa there is two to four times more ice condensate, but less than half as much liquid condensate below 700 hPa (Figure \ref{fig:TotCond}).
+  \item There is less $\overline{\rm{P}}$ in the E1 and E2 experiments (Table \ref{tab:experimentmeans}).  Values for 1 and 2 km simulations are in the 3.1-3.7 mm/d range, while those 
+  for the $100 \textrm{km}$ and $25 \textrm{km}$ experiments are about 10-25\% higher (3.5-4.1 mm/d).  
+  \end{itemize}
+
+It is remarkable that despite having the same prescribed SST and incoming radiation
+the control simulations (LWCRE on) have a precipitation rate  that can vary by as much as 
+25\%, wildly different precipitation structures, and surface enthalpy fluxes that vary by as much as 
+60 $\rm{W/m^2}$ (Table 2, Figures \ref{fig:domdep}, \ref{fig:hov_4mods_6mn}, and \ref{fig:enthalpy}).
+All simulations use the same dynamical core, radiation, turbulence, large-scale cloud and microphysics parameterizations.  
+Results from these experiments demonstrate that the cloud type
+plays a fundamental role in determining how the radiative fluxes couple
+the large-scale circulation to the moisture.  The large differences in the surface enthalpy flux
+appear to be due to differences in the winds near the surface (Figure \ref{fig:enthalpy}).  
+The large influence of the low-level wind  and enthalpy flux on the structure of precipitation, 
+low-level moisture and clouds, and mid-tropospheric humidity in the convective regions is 
+consistent with previous studies showing the importance of the low-level wind fields for precipitation 
+\cite{Wofsy_Kuang_2012, Fermepin_Bony_2014}, boundary layer properties \cite{Raymond_1994}, and even the climate 
+sensitivity \cite{Silvers_etal_2016}.  
+
+Many of the previous studies of mock-Walker circulations or simplified models of tropical dynamics 
+\cite<e.g., >[]{Raymond_1994, Pierrehumbert_1995, Larson_etal_1999, Neelin_Zeng_2000, 
+Bretherton_Sobel_2002, Sobel_etal_2004, Peters_Bretherton_2005}
+have focused on simplifying the physics parameterizations as much as possible while still maintaining the interactions between convection and radiation.  
+These have proven useful but have remained complex enough to make comparisons with other models 
+difficult, and the degree to which the simplifying assumptions influence the conclusions is unclear.    
+The approach of this paper is different.  We study an idealized configuration with the full complexity of a GCM. 
+\citeA{Pierrehumbert_1995} argued that cloud processes are not the leading cause of the 
+stable tropical climate but that it is, `the ability of
+the atmospheric circulation to create dry air pools in regions of large-scale subsidence' 
+-these are the `Radiator Fins'-, that serve as a cooling (thus stabilizing) mechanism for Earth's tropical climate.  
+Our results demonstrate how strongly the cloud radiative effects influence the circulations that set up the Radiator Fins.  
+Experiments with prescribed SST preclude the possibility of studying feedbacks
+between the circulation, and the relative area of warm and cold SST regions as \citeA{Pierrehumbert_1995} did.  
+However, our study shows how the interactions between clouds, radiation, and the circulation lead to changes in the area
+of the dry regions above the boundary layer.
+These dry regions allow the tropics to efficiently cool to space and maintain an energetic balance.   
+
+Using mock-Walker simulations to benchmark a GCM with a CRM was proposed by \citeA{Jeevanjee_etal_2017}.
+This was part of our initial motivation but is predicated on physics parameterizations that are simple enough to allow for a clean comparison. 
+Utilizing something like Kessler microphysics, 
+fixed radiative cooling, and a binary large-scale cloud scheme would provide an elegant comparison between 
+models.  However, making such changes to the GCM used in this paper would result in a model so different from AM4.0 
+that the CRM would no longer serve as a benchmark for AM4.0.   We have chosen to keep the GCM as close as possible to AM4.0.
+More intermediate steps are necessary to create a clean link between CRMs and GCMs.  
+The complexity of our results highlight the need for continued work with simple theoretical models such as the 
+Quasiequilibrium Tropical Circulation Model \cite<QTCM;>[]{Neelin_Zeng_2000} and the Simplified QTCM, or SQTCM 
+\cite{Sobel_etal_2004,Peters_Bretherton_2005, Bretherton_etal_2006}.  
+Our results also show that the mock-Walker circulation is an ideal configuration with which to test developments in 
+large-scale cloud or microphysics parameterization schemes.  
+This is an important step in the ongoing process of merging GCMs and CRMs into a global CRM.   
+
+There is a rich literature on tropical overturning circulations.  While this study has interpreted the experiments 
+in the context of the Walker Circulation, our results are also relevant to the overturning circulations and 
+meridional SST gradients that define the Intertropical Convergence Zone (ITCZ) and the Hadley Circulation.  
+In that context, our results are consistent with those of several recent studies 
+\cite<e.g., >[]{Fermepin_Bony_2014, Harrop_Hartmann_2016b, Popp_Silvers_2017,Dixit_etal_2018,Flaschner_etal_2018,Albern_etal_2018}.   
+Those studies, as well as the present one, show that the LWCRE acts to constrain, or tighten, the deep convective region.  
+This results from an increased atmospheric energy uptake and strengthening of the overturning circulation where the deep convective clouds occur \cite{Popp_Silvers_2017}.  
+Also consistent with this previous work, the present paper shows that the LWCRE has a strong influence on the low-level circulation.   
+When the LWCRE is turned off, the low-level circulations shift upward and are not as well organized 
+(Figures \ref{fig:rh_psi_P25E2E1} and \ref{fig:rh_psi_P25E2E1_lwoff}).
+There is a corresponding change in the low-level cloud fields, LW radiative cooling, and the domain mean precipitation.
+For the experiments with a GCM-like configuration, the LWCRE strongly influences the precipitation from the large-scale
+cloud scheme while leaving the precipitation from the convective parameterization scheme largely unchanged.  This 
+contributes to a much stronger response of the GCM-like experiments to the LWCRE, especially in the low-levels of the 
+troposphere.  
+\citeA{Albern_etal_2018} showed that there is a large spread in the CRE response to warming among GCMs.  
+Our expectation is that the fraction of precipitation that is due to the convective parameterization will be particular to individual GCMs. 
+The disparate influence of the LWCRE on the large-scale precipitation could explain some of the model
+spread in the CRE response to warming.  
+
+
+
+\section{Conclusions}
+
+
+We have used the framework of the tropical overturning circulation, specifically the Walker Circulation, 
+to compare the multi-scale interactions between large-scale circulations, cloud systems, and interactive 
+radiation across experiments with grid-spacing ranging from 1km to 100km.   
+To better isolate the role that clouds and humidity play in driving and responding to the 
+circulation, experiments have been performed with and without the radiative effect of clouds, with and without the 
+convective parameterization, and with multiple domain sizes.  Our results show that 
+the convective parameterization and the longwave cloud radiative effect (LWCRE) strongly interact with each other and 
+often lead to asymmetric results and large differences in the equilibrated atmospheric state.  
+
+
+Perhaps the most interesting result is that the GCM-like experiments have a relatively large low-level 
+cloud fraction while the CRM-like experiments have a large upper-level cloud fraction.  
+This difference in the dominant cloud type leads to opposite atmospheric responses to changes of the LWCRE.  
+The LWCRE increases the domain mean precipitation ($\overline{\rm{P}}$) for the GCMs but 
+decreases it for the CRMs (Table \ref{tab:experimentmeans}).  
+Over the regions with cooler SSTs the large low-level cloud fraction of the GCMs 
+acts as a source of radiative cooling that is balanced by condensational heating in the control case.  
+A strong decrease of low-level clouds in the GCMs
+for the LWCRE-off experiments removes this cooling and condensational heating.  The increase 
+of precipitation that is expected in the LWCRE-off case as a result of increased LW cooling to space is not enough
+to overcome the decreased condensational heating at low-levels, with a net effect of less $\overline{\rm{P}}$.  
+Over the regions with cooler SSTs, the CRMs have very few (less than \%5) low-level clouds and as a result the 
+change of $\overline{\rm{P}}$ is driven by the increased LW cooling to space in the LWCRE-off case.
+\citeA{Watanabe_etal_2018} found a similar relationship between low-clouds and precipitation in the context climate 
+change experiments.
+This highlights how sensitive the energetics of the tropical atmosphere are to the distribution of clouds and 
+their interaction with the radiation.      
+
+Decreasing the grid-spacing from $100 \textrm{km}$ to 1km allowed for the parameterization of both deep and shallow 
+convection to be turned off, resulting in a more direct simulation of the dynamics that are
+fundamental to the overturning tropical circulation.  The resulting atmospheric state has a stronger overturning 
+circulation, a much more humid (up to 50\% higher RH) deep convective region, and less $\overline{\rm{P}}$ .  
+Relative to the GCM-like simulations the 1 and 2km simulations have two to four times as much condensate
+aloft but only about half as much below 700 hPa.  The increase of vertical moisture transport with increasing 
+resolution is particularly apparent in the LWCRE-off experiments (Figure \ref{fig:rh_psi_P25E2E1_lwoff}, lower panels).   
+
+Three striking changes occur as a result of a four-fold increase in domain width.  The low-level clouds shift 
+upward by more than 100 hPa (Figure 6), there is a dramatic widening of the precipitation distribution in the LWCRE-off experiments 
+(compare Figures 4 and Figure 5),  
+and the LWCRE mediates the precipitation from the large-scale cloud parameterization but not the convective precipitation (Figure \ref{fig:conv_vs_ls}).    
+This impact on the large-scale precipitation occurs for the GCM-like experiments on smaller domains as well, 
+but is pronounced in the large domain experiments.  
+This dependence on domain size could imply that 4000 km is not large enough to contain the largest 
+scales that are important for the overturning circulation.  Another reason for the domain 
+size dependence could be the changing scale of the warm and cold regions of SST.  
+
+The flexible modeling system at GFDL has allowed us to use a single code base in a GCM-like configuration with 
+physics parameterizations that are very close to the AM4.0/CM4.0 models as well as in a CRM-like configuration 
+with explicit convection.  While there are significant differences between the CRM presented in this paper and more 
+conventional CRMs (e.g. vertical grid spacing and a threshold based `binary' cloud scheme), the prospect of so 
+easily converting a GCM into something like a CRM provides an enticing testbed for seeking process level 
+understanding and future model development.   This can be thought of as a top-down approach to developing 
+a global CRM which should complement efforts that start with a regional large-eddy simulation (LES) model or CRM model and work 
+towards a global model \cite<e.g.,>[]{Schneider_etal_2017,Schneider_etal_2019,Satoh_etal_2019}.
+The comparisons presented in this paper have highlighted some of the unexpected behaviors of a GCM-like 
+configuration when used with idealized boundary conditions.  
+Two examples include the consistent asymmetry of the circulation and precipitation relative 
+to the fixed SST pattern, and the dominance of the large-scale precipitation over the convective precipitation.  
+The comparisons have also illustrated some of the challenges that arise when dramatically increasing the resolution of a GCM.  
+These include the lack of shallow clouds in our CRM (both convective and stratocumulus) and the difficulty of comparing 
+clouds in this CRM to other CRMs due to the prognostic large-scale cloud scheme.  
+These are not fundamental challenges and motivate future work.  
+
+
+Mock -Walker cell configurations are an important step between models of RCE and models which simulate a wider range of Earth like conditions.
+The only difference between our simulations and radiative convective equilibrium (RCE) is the gradient of SST at the lower boundary.  
+This simple difference from pure RCE creates a concrete link with the observed tropical atmosphere.  
+The goal in developing idealized models is to capitalize on their simplicity in such a way that key elements of the 
+process in question become clear.  
+In this case the processes of interest are the couplings between clouds, radiation, and the large-scale circulation.  
+Studies using RCE have been fruitful but insufficient to fully illuminate these processes while typical GCM studies 
+can be prohibitively complex.
+Many of the characteristics from RCE experiments with convective aggregation are present in mock-Walker simulations.   
+Deep convection is anchored to a single location with high humidity and is surrounded by dry subsiding regions.  
+It would be interesting to see how consistent the degree of aggregation and drying is among 
+different models, as well as the response to warming SSTs.  The configuration of a mock-Walker circulation 
+is ideal for studying the effects of aggregation in a system that is more constrained than pure RCE.     
+Prescribing a warm region of SST does not fully determine the large-scale circulation.  
+This paper clearly shows how much variability there still is between the large-scale circulation, clouds, 
+and fluxes of energy (radiative and surface enthalpy).
+The initial results from the RCE Model Intercomparison Project \cite<RCEMIP; >[]{Wing_etal_2020} show a wide range of variability
+in the temperature, humidity, and clouds among the models.
+Adding the extra constraint of an overturning circulation forced by a prescribed gradient of SST, similar to the recent work of 
+\citeA{Shamekh_etal_EOR} and \citeA{Muller_Hohenegger_2020} would provide a context within which the 
+wide range of results from RCEMIP could be reexamined and expanded upon.  
+
+% INCLUDE??
+%Doubly periodic CRM simulations of RCE are abundant.  Doubly periodic simulations of RCE with a full set 
+%of GCM physics are less common (e.g. Held et al., 2007; Silvers et al., 2016).  As argued in Held et al., 2007, and 
+%utilized in Silvers et al., 2016, it is important to study idealized models with the same physics and resolution of 
+%GCMs, 'especially if that GCM is being used to make climate change predictions that help form the basis for 
+%society's response to global warming.'
+
+%\textit{this paragraph is pretty repetetive with earlier parts of the section.  do I want these point here or earlier?}
+%What are we to conclude from this array of results?  
+%Our CRMs resolve a far broader 
+%range of turbulent motions and thus do a better job of explicit mixing compared to the GCM-like 
+%configurations.  However, the increase in resolved scales comes at the cost of most of the low-level clouds (\textit{what is 
+%the observed cloud fraction in the tropical Pacific below 700 hPa?}).  The GCM-like simulations match the CRM-like 
+%simulations  in the general two celled structure of the overturning circulation and the approximate distribution of condensate.  
+%While the GCM-like simulations succeed at producing 20-30\% low-level cloud fraction they produce few upper-level 
+%clouds and the distribution of the precipitation is erratic and dependent on interactions between the convective 
+%parameterization and the strength of the longwave cloud radiative effect.  
+% 
+
+
+Increasing computing resources will continue to blur the line that distinguishes GCMs from CRMs. 
+As the grid-spacing of models decreases so too does the necessity of representing convection with parameterizations. 
+As a result, the details of the large-scale cloud scheme will be increasingly important in the development of GCMs. 
+For high resolution models with explicit convection, the upper-level clouds dominate the impact of interactions between 
+clouds and radiation, but for GCM-like simulations the low-level clouds dominate this impact.  
+Determining the respective roles of high and low clouds as mediators between radiative effects and the large-scale overturning 
+circulations in the observable atmosphere should be a high priority in future research.     
+
+
+
+%\appendix
+%
+%%A couple of appendices with extra details which may not be included in the final paper.  
+%
+%\section{Streamfunction}
+%
+%For a two-dimensional flow in the $\lambda,p$ plane we can write the mass conservation equation in terms of a 
+%mass streamfunction $\psi$ as: 
+%\begin{equation}
+%u =  -\frac{\partial \psi}{\partial p}   \,\, {\rm and} \,\, \omega =\frac{\partial \psi}{a \rm{cos} \phi \partial \lambda}
+%\end{equation}
+%with $a$ as the radius of Earth.
+%This satisfies the continuity equation: 
+%\begin{equation}
+%\frac{\partial}{a \rm{cos} \phi\partial\lambda}\left(-\frac{\partial \psi}{\partial p}\right)+\frac{\partial}{\partial p}\left(\frac{\partial \psi}{a \rm{cos}\phi \partial \lambda}\right)=0.
+%\end{equation}
+%The streamfunction is therefore defined by two equations and can be solved with either.  The choice is often made based on the 
+%boundary conditions.  Dimensionally, $\psi$ must have units of velocity multiplied by pressure, or $\rm{kg/s^3}$.  
+%Often, the streamfunction is computed as a mass streamfunction with units of $\rm{kg/s}$.  
+%Density does not appear above because pressure is being used as the vertical coordinate.   
+%With height as the vertical coordinate, mass is given by $\rho dxdydz$, assuming a hydrostatic atmosphere and rewriting in terms of pressure, mass is given by $-(1/g) dxdydp$.
+%Scaling the equations above by $a/g$ results in $\psi$ having units of $\rm{kg/s}$.  
+%
+%Solving for $\psi$ by integrating the vertical velocity is possible, but requires a boundary condition along one edge of the domain between the surface and the 
+%top of the atmosphere.  Solving for $\psi$ by integrating the horizontal velocity allows us to set $\psi=0$ along the upper edge of the domain.  
+%This is both simple, and physically motivated.  
+%
+%% computed with matlab, see StreamFunNew.m script
+%\begin{equation}
+%\psi_{i,j+1}= \psi_{i,j}-\frac{a}{g}\sum_{j=32}^1 \left(u_{i,j+1}(p_{j+1}-p_{j})\right).
+%\end{equation}
+%%
+%In the previous equation, $w, u,$ and $\rho$ have all been averaged in space and time and $p$ is the pressure on full model levels.  The 
+%radius of Earth is $a$ and the acceleration due to gravity by $g$.  The density, $\rho$ is computed as $ \rho_{i,j}=\frac{p_j}{R T_{v;i,j}}  $  where $R$ and $T_v$ are the gas constant for dry air ($287 \rm{J/kg K}$) and the virtual temperature ($T_v=T(1+q/\epsilon)/(1+q)$), respectively.  The specific humidity is given by $q$ and $\epsilon = 0.622$.
+%
+
+%\section{Cloud Water and Cloud Fraction}
+%
+%The last several generations of the GFDL atmospheric models have used the parameterization developed by Tiedtke (1993) to prognostically compute the grid-cell averaged cloud water ($l$) and cloud fraction ($a$).  The formulation for the local time rate of change from Tiedtke is 
+%\begin{equation}
+%  \frac{\partial l}{\partial t} = A(l)+S_{cv}+S_{BL}+C-E-G_{p}-\frac{1}{\rho}\frac{\partial}{\partial z}(\rho\overline{w'l'})_{entr}
+%\end{equation}
+%and 
+%\begin{equation}
+%  \frac{\partial a}{\partial t} = A(a)+S(a)_{cv}+S(a)_{BL}+S(a)_C-D(a).
+%\end{equation}
+%Transport of $l$ or $a$ through the boundaries of a grid is given by $A(l)$ or $A(a)$, the terms ($S_{cv}, S(a)_{cv}, S_{BL}, S(a)_{BL}$, and $S(a)_C$) are the sources of cloud water or cloud fraction from convection, boundary layer turbulence, and condensation, respectively.  The condensation/sublimation rate is given by $C$, $E$ is the evaporation of cloud water, $G_{p}$ is the rate of generation of precipitation by microphysical processes and the $\overline{w'l'}$ term is the flux divergence from entrainment at the top of the cloud layer, and lastly, $D(a)$ is the sink of cloud fraction due to evaporation.
+%
+%Often, cloud resolving models, or cloud system resolving models, do not predict partially cloudy grid cells, but rather consider a cell to be either cloudy or clear.  If the goal is to more directly compare to cloud resolving models then cloud fraction should not be prognostically predicted but simply tied to a certain value of total condensate in a grid-cell.  However, in the Tiedtke system, the prognostic equation for cloud water depends on the cloud fraction.  As given by equations 16, 24, 26,28, 30, and 33 in Tiedtke's paper, this dependence is present in the $S_{BL}$, $C$, $E$, and $G_{p}$ terms. 
+%
+\acknowledgments
+The authors thank Leo Donner, Nadir Jeevanjee, Yi Ming, and Juho Iipponen for discussions  that helped to motivate this work as well as useful comments on drafts of the manuscript.  The expertise of Ming Zhao with the physics of AM4.0 also proved helpful in many conversations related to this work.  LGS performed the experiments and wrote the paper under award NA14OAR4320106 from the National Oceanic and Atmospheric Administration, U.S. Department of Commerce.  LGS also acknowledges recent partial support through Stony Brook University from award NSF AGS1830729.  The code for the AM4.0 model is available for download at  https://data1.gfdl.noaa.gov/nomads/forms/am4.0/, scripts used to perform the analysis and create figures are available on the GitHub repository (https://github.com/gitleviglenn/SilversWalkerCell.git).
+
+\bibliography{Silvers_WalkerCell}
+
+%Reference citation instructions and examples:
+%
+% Please use ONLY \cite and \citeA for reference citations.
+% \cite for parenthetical references
+% ...as shown in recent studies (Simpson et al., 2019)
+% \citeA for in-text citations
+% ...Simpson et al. (2019) have shown...
+%
+%
+%...as shown by \citeA{jskilby}.
+%...as shown by \citeA{lewin76}, \citeA{carson86}, \citeA{bartoldy02}, and \citeA{rinaldi03}.
+%...has been shown \cite{jskilbye}.
+%...has been shown \cite{lewin76,carson86,bartoldy02,rinaldi03}.
+%... \cite <i.e.>[]{lewin76,carson86,bartoldy02,rinaldi03}.
+%...has been shown by \cite <e.g.,>[and others]{lewin76}.
+%
+% apacite uses < > for prenotes and [ ] for postnotes
+% DO NOT use other cite commands (e.g., \citet, \citep, \citeyear, \nocite, \citealp, etc.).
+%
+  
+  
+\end{document}  
