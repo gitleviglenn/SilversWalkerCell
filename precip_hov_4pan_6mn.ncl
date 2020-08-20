@@ -9,7 +9,7 @@
 ; this script was used to create figure 8 of the Silvers and Robinson 2020, as submitted to
 ; JAMES
 ;
-; levi silvers                                                           june 2020
+; levi silvers                                                           august 2020
 ;----------------------------------------------------------------------------------------------
 
 ; load necessary libraries
@@ -49,9 +49,11 @@ incoming_d=path_to_wc+exdir+"/c8x160L33_am4p0_25km_wlkr_ent0p9/"+"1979th1983_dai
 ;incoming_d=path_to_wc+exdir+"/c8x160L33_am4p0_25km_wlkr_ent0p9_lwoff/"+"1979th1983_daily.nc"
 
 ; data file with 1km grid spacing
-incoming_e="/Users/silvers/data/WalkerCell/gauss_d/c10x4000L33_am4p0_1km_wlkr_4K/1979.atmos_daily_precip_mon123456.nc"
+;incoming_e="/Users/silvers/data/WalkerCell/gauss_d/c10x4000L33_am4p0_1km_wlkr_4K/1979.atmos_daily_precip_mon123456.nc"
+incoming_e="/Users/silvers/data/WalkerCell/testing_20181203/c10x4000L33_am4p0_1km_wlkr_4K/1979.6mn.atmos_daily_selvars.nc"
 
-incoming_f="/Users/silvers/data/WalkerCell/gauss_d/c100x2000L33_am4p0_2km_wlkr_4K/1979.atmos_daily_precp_mon123456.nc"
+;incoming_f="/Users/silvers/data/WalkerCell/gauss_d/c100x2000L33_am4p0_2km_wlkr_4K/1979.atmos_daily_precp_mon123456.nc"
+incoming_f="/Users/silvers/data/WalkerCell/testing_20181203/c50x2000L33_am4p0_2km_wlkr_4K/1979.6mn.atmos_daily_selvars.nc"
 
 print("infile for 100km is: "+incoming_a)
 print("infile for 25km is: "+incoming_d)
