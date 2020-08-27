@@ -1,5 +1,23 @@
+;---------------------------------------------------------------------------------------------
+; psi_rh_cond_6pan_new.ncl
+;
+; used to create Figures 1,9, and 10 for Silvers and Robinson, JAMES
+;
+; ensind determines which experiment is plotted for the 25km cases
+; for ensind
+; 0: noconv
+; 1: lwoff
+; 2: control
+; 3: lwoff noconv
+;
+; These settings produce the following figures:  
+; Figure 1 : figurenumber=2;ensind=2;center25string="P25";expstring="ctl"
+; Figure 9 : figurenumber=1;ensind=0;center25string="P25";expstring="ctl"
+; Figure 10: figurenumber=1;ensind=3;center25string="P25";expstring="lwoff"
+;
+; levi silvers                                                               august 2020
+;---------------------------------------------------------------------------------------------
 ; load necessary libraries
-; psi_rh_cond_6pan.ncl
 
   load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_code.ncl"
   load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/gsn_csm.ncl"
@@ -9,26 +27,16 @@ begin
 
 ;-----------------------------------
 ; define parameters for script:
-  figurenumber = 1 ; 1 is defualt for crm resolution, 2 or greater is for gcm res
-  crm_grid = 1 ; 1 for 1km, 2 for 2km
+  figurenumber = 2 ; 1 is defualt for crm resolution, 2 or greater is for gcm res
+  ;crm_grid = 1 ; 1 for 1km, 2 for 2km
   ensind=2 ; should correspond to control run for 25km grid-spacing ; 2 is ctl, 1 is lwoff
   center25string="P25"
   expstring="ctl" ; lwoff or ctl
 ;  expstring="lwoff" ; lwoff or ctl
-; for ensind
-; 0: noconv
-; 1: lwoff
-; 2: control
-; 3: lwoff noconv
+
 ;-----------------------------------
 ; name of output file
   fileout="rh_psi_cond"
-;-----------------------------------
-;  expstring="ctl"
-  if (figurenumber .lt. 2) then
-    ;expstring="lwoff"
-    expstring="ctl"
-  end if
 
 ;-----------------------------------
 ; path to data
@@ -271,9 +279,13 @@ print("dimsizes of psiplot are: "+dimsizes(psiplot1))
     relheight= 0.17
 
 ;; start default plots----------------------------------------------------------
-;  plot = new(6,graphic)
-  plot_u = new(3,graphic)
-  plot_b = new(3,graphic)
+use_gsn_panel=True  ; False is what the original script used
+if (use_gsn_panel) then
+  plot = new(6,graphic)
+else
+ plot_u = new(3,graphic)
+ plot_b = new(3,graphic)
+end if
  
   gsn_define_colormap(wks,"amwg256")
 
@@ -433,7 +445,11 @@ print("max/min of psiplot2 is: "+max(psiplot2(:,:))+" and: "+min(psiplot2(:,:)))
 
     overlay(plot_rh_a,plot_psi)
 
+if (use_gsn_panel) then
+    plot(0) = plot_rh_a
+else
     plot_u(0) = plot_rh_a
+end if
 
     res@gsnCenterString     = "E1 "
     res@trXMinF      = 1
@@ -475,8 +491,16 @@ print("max/min of psiplot2 is: "+max(psiplot2(:,:))+" and: "+min(psiplot2(:,:)))
 
     overlay(plot_rh_3,plot_psi_3)
     
-    plot_u(1) = plot_rh_3
-    plot_u(2) = plot_rh_2
+    if (use_gsn_panel) then
+      plot(1) = plot_rh_3
+    else
+      plot_u(1) = plot_rh_3
+    end if
+    if (use_gsn_panel) then
+      plot(2) = plot_rh_2
+    else
+      plot_u(2) = plot_rh_2
+    end if
 
     ; now plot the lower 3 panels with total condensate
     ; set up vertical axis limits
@@ -536,14 +560,19 @@ print("max/min of psiplot2 is: "+max(psiplot2(:,:))+" and: "+min(psiplot2(:,:)))
     res3@vpYF         = figbot
     plot_cond_2 = gsn_csm_contour(wks,condplot1(:,:),res3)
 
-    plot_b(0) = plot_cond_0
-    plot_b(1) = plot_cond_1
-    plot_b(2) = plot_cond_2
-    
+    if (use_gsn_panel) then
+      plot(3) = plot_cond_0
+      plot(4) = plot_cond_1
+      plot(5) = plot_cond_2
+    else
+      plot_b(0) = plot_cond_0
+      plot_b(1) = plot_cond_1
+      plot_b(2) = plot_cond_2
+    end if    
+
   else ;--------------------------------------------------------------------------
   if (figurenumber .ge. 2) then
   
-    ;mainTitle="GCM resolution"
     mainTitle=" "
   
     res@trXMinF       = 25
@@ -570,7 +599,11 @@ print("max/min of condplot ensind  is: "+max(condplot(:,:,ensind))+" and: "+min(
     plot_rh_a = gsn_csm_contour(wks,rhplot(::-1,::-1,ensind),res)
     overlay(plot_rh_a,plot_psi)
 
-    plot_u(0) = plot_rh_a
+    if (use_gsn_panel) then
+      plot(0) = plot_rh_a
+    else
+      plot_u(0) = plot_rh_a
+    end if
 
     res@tiYAxisString     = " "
     res@gsnCenterString     ="P25 LWCRE-off"
@@ -588,7 +621,11 @@ print("max/min of condplot ensind  is: "+max(condplot(:,:,ensind))+" and: "+min(
     plot_rh_b  = gsn_csm_contour(wks,rhplot(::-1,::-1,1),res)
     overlay(plot_rh_b,plot_psi_b)
 
-    plot_u(1) = plot_rh_b
+    if (use_gsn_panel) then
+      plot(1) = plot_rh_b
+    else
+      plot_u(1) = plot_rh_b
+    end if
 
     res@tiYAxisString     = " "
     res@gsnCenterString     = "E25 LWCRE-on, Conv-off"
@@ -605,7 +642,11 @@ print("max/min of condplot ensind  is: "+max(condplot(:,:,ensind))+" and: "+min(
     plot_rh_b  = gsn_csm_contour(wks,rhplot(::-1,::-1,0),res)
     overlay(plot_rh_b,plot_psi_b)
 
-    plot_u(2) = plot_rh_b
+    if (use_gsn_panel) then
+      plot(2) = plot_rh_b
+    else
+      plot_u(2) = plot_rh_b
+    end if
 
     ; set up vertical axis limits
     res3@gsnDraw               = False
@@ -655,11 +696,15 @@ print("max/min of condplot ensind  is: "+max(condplot(:,:,ensind))+" and: "+min(
     res3@vpYF         = figbot
     plot_cond_0 = gsn_csm_contour(wks,condplot(:,::-1,0),res3)
 
-    plot_b(0) = plot_cond_2
-
-    plot_b(1) = plot_cond_1
-
-    plot_b(2) = plot_cond_0
+    if (use_gsn_panel) then
+      plot(3) = plot_cond_2
+      plot(4) = plot_cond_1
+      plot(5) = plot_cond_0
+    else
+      plot_b(0) = plot_cond_2
+      plot_b(1) = plot_cond_1
+      plot_b(2) = plot_cond_0
+    end if
     end if
   end if
 
@@ -693,10 +738,40 @@ print("max/min of condplot ensind  is: "+max(condplot(:,:,ensind))+" and: "+min(
 ;  gsn_panel(wks,plot_u,(/1,3/),resT)
 ;  gsn_panel(wks,plot_b,(/1,3/),resB)
  
-; if gsn_panel is not being used...
-psres  = True
-maximize_output(wks,psres) 
+; default: if gsn_panel is not being used...
+;psres  = True
+;maximize_output(wks,psres) 
+
+; if gsn_panel is being used... 
+if (use_gsn_panel) then
+  resP                         = True
+  ;resP@txString                = " " 
+  ;;resP@txString                = "good grief"
+  ;;resP@txString                = plottitle
+  ;resP@gsnPanelLabelBar        = True
+  ;resP@pmLabelBarWidthF    = 0.3
+  ;resP@pmLabelBarHeightF    = 0.06
+  ;resP@lbTitleOn           = True
+  ;resP@lbTitlePosition     = "Bottom"
+  ;resP@lbTitlePosition     = "Top"
+  ;resP@lbTitleString       = "mm/day"
+  ;resP@lbTitleFontHeightF  = 0.015
+  ;resP@lbLabelStrings = (/"1","jo","hi","no","314","8","yes"/)
+  ;resP@lbLabelFontHeightF      = 0.015
+  resP@gsnPanelFigureStrings = (/"a","b","c","d","e","f"/)
+  resP@gsnPanelFigureStringsFontHeightF = 0.015
+  resP@amJust                = "TopLeft"
+;                         0.078,0.316
+  resP@gsnPanelXF    = (/0.08,0.35,0.62,0.08,0.35,0.62/)
+  resP@gsnPanelDebug        = True 
  
+   gsn_panel(wks,plot,(/2,3/),resP)
+  
+  ;maximize_output(wks,resP)
+else 
+  psres  = True
+  maximize_output(wks,psres) 
+end if
  
 print("figurenumber is: "+figurenumber)
 
