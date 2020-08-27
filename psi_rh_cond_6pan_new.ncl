@@ -12,8 +12,14 @@
 ;
 ; These settings produce the following figures:  
 ; Figure 1 : figurenumber=2;ensind=2;center25string="P25";expstring="ctl"
-; Figure 9 : figurenumber=1;ensind=0;center25string="P25";expstring="ctl"
-; Figure 10: figurenumber=1;ensind=3;center25string="P25";expstring="lwoff"
+; Figure 9 : figurenumber=1;ensind=0;center25string="E25";expstring="ctl"
+; Figure 10: figurenumber=1;ensind=3;center25string="E25";expstring="lwoff"
+;
+; after the eps files are created, I used this command to adjust the bounding box: 
+; gs -dNOPAUSE -dBATCH -q -sDEVICE=bbox filename.eps
+;
+; however, I did slightly further adjust the bounding box to expand the box to the right and top
+; x0,y0,x,y
 ;
 ; levi silvers                                                               august 2020
 ;---------------------------------------------------------------------------------------------
@@ -27,12 +33,13 @@ begin
 
 ;-----------------------------------
 ; define parameters for script:
+  use_gsn_panel=True  ; False is what the original script used
+
   figurenumber = 2 ; 1 is defualt for crm resolution, 2 or greater is for gcm res
   ;crm_grid = 1 ; 1 for 1km, 2 for 2km
   ensind=2 ; should correspond to control run for 25km grid-spacing ; 2 is ctl, 1 is lwoff
   center25string="P25"
   expstring="ctl" ; lwoff or ctl
-;  expstring="lwoff" ; lwoff or ctl
 
 ;-----------------------------------
 ; name of output file
@@ -127,14 +134,9 @@ print("---------------------------------------------")
                  50,60,70, \
                  80,90/) ; 9
   
-  ;my_cond_levels = (/0.5,0.4,0.3,0.2,0.1,0.05,0.01, \
-  ;                   0.005, 0.001, 0.0005, \
-  ;                   0.0001,0.00005,0.00001 /) ; 13
   my_cond_levels = (/0.5,0.4,0.3,0.2,0.1,0.05,0.01, \
                      0.005, 0.001 /) ; 9
   
-  ; previous my_cond_colors = (/0,65,60,55,50,45,40,20,15,12,9,6,4,2/);,
-  ;my_cond_colors = (/0,98,90,82,74,66,58,50,42,34,26,18,10,2/);
   my_cond_colors = (/0,129,100,78,67, \
                     56,45,12,7,2/); need 10
 
@@ -179,10 +181,6 @@ if (figurenumber .lt. 2) then
                       -11*scale_cons, \
                      -5*scale_cons, 1*scale_cons, 7*scale_cons, 13*scale_cons, \
                      19*scale_cons,   25*scale_cons,   31*scale_cons,  37*scale_cons /)
-;  my_levels_psi_25 = (/-20*scale_cons,-14*scale_cons, -8*scale_cons, -2*scale_cons, \
-;                      4*scale_cons, \
-;                      10*scale_cons, 16*scale_cons, 22*scale_cons, 28*scale_cons, \
-;                     34*scale_cons,   40*scale_cons,   46*scale_cons,  52*scale_cons /)
 end if
 end if
 
@@ -279,7 +277,6 @@ print("dimsizes of psiplot are: "+dimsizes(psiplot1))
     relheight= 0.17
 
 ;; start default plots----------------------------------------------------------
-use_gsn_panel=True  ; False is what the original script used
 if (use_gsn_panel) then
   plot = new(6,graphic)
 else
@@ -425,18 +422,6 @@ print("max/min of psiplot2 is: "+max(psiplot2(:,:))+" and: "+min(psiplot2(:,:)))
     res2@trXMinF      = 25
     res@gsnCenterString     = center25string
     res2@cnLevels              = my_levels_psi_25
-;    ; res2@cnLevels              = my_levels_psi_25_lwoff
-;    res@vpXF          = figl
-;    res@vpYF          = figtop
-;    res2@vpXF         = figl
-;    res2@vpYF         = figtop
-;
-;    res@lbBoxLinesOn            = True
-;    res@lbOrientation           = "Vertical"
-;    res@lbTitleString           = "%"
-;    res@lbTitlePosition         = "Bottom"
-;    res@lbLabelFontHeightF      = 0.013
-;    res@lbTitleFontHeightF      = 0.013
 
     res@lbLabelBarOn      = False
 
@@ -508,8 +493,6 @@ end if
     res3@gsnDraw               = False
     res3@gsnFrame              = False
     res3@cnInfoLabelOn            = False
-    ;res3@tmYLLabelFontHeightF = 0.02
-    ;res3@tiYAxisFontHeightF= 0.02
     res3@gsnCenterString     = center25string
     res3@cnFillOn                 = True 
     res3@cnLinesOn                = False
@@ -532,14 +515,6 @@ end if
     res3@tiYAxisString     = "Pressure (hPa) "
     res3@cnLevels            = my_cond_levels
     res3@cnFillColors        = my_cond_colors
-
-;    res3@lbBoxLinesOn            = True
-;    res3@lbTitleString           = "g/kg"
-;    res3@lbTitleFontHeightF      = 0.013
-;    res3@lbTitlePosition         = "Bottom"
-;    res3@lbOrientation           = "Vertical"
-;    res3@lbLabelFontHeightF      = 0.01
-
     res3@lbLabelBarOn      = False
     res3@vpXF         = figl
     res3@vpYF         = figbot
@@ -659,7 +634,6 @@ print("max/min of condplot ensind  is: "+max(condplot(:,:,ensind))+" and: "+min(
     res3@trYReverse               = True     ; reverse the y-axis
     res3@gsnYAxisIrregular2Log = True    ; Convert Y axis to logarithmic
     res3@cnLineLabelInterval  = 0                   ; label every other line
-;    res3@lbLabelBarOn      = False
     res3@gsnLeftString = "" ; turn off/on varname and units at top of image
     res3@gsnRightString = ""
     res3@trYMaxF      = 100000
@@ -689,7 +663,6 @@ print("max/min of condplot ensind  is: "+max(condplot(:,:,ensind))+" and: "+min(
     res3@vpYF         = figbot
     res3@lbLabelBarOn      = False
     plot_cond_1 = gsn_csm_contour(wks,condplot(:,::-1,1),res3)
-    ;res3@gsnCenterString     = " "+center25string+" LWCRE-on, Conv-off"
     res3@gsnCenterString     = " "+"E25 LWCRE-on, Conv-off"
     res3@lbLabelBarOn      = True
     res3@vpXF         = figr
@@ -708,66 +681,17 @@ print("max/min of condplot ensind  is: "+max(condplot(:,:,ensind))+" and: "+min(
     end if
   end if
 
-;  resT                         = True
-;  resT@gsnFrame                = False
-;  resT@gsnPanelTop             = 0.90
-;  resT@gsnPanelBottom          = 0.45
-;  resT@txString                = mainTitle
-;  resT@lbBoxLinesOn            = True
-;  resT@lbTitleString           = " % "
-;  resT@lbTitlePosition         = "Right"
-;  resT@gsnPanelLabelBar        = True
-;  resT@lbOrientation           = "Vertical"
-;  resT@lbLabelFontHeightF      = 0.013
-;  
-;  resB                         = True
-;  resB@gsnFrame                = False
-;  resB@gsnPanelTop             = 0.82
-;  ;resB@lbLabelAngleF        = 90
-;  ;resB@gsnPanelBottom          = 0.45
-;  ;resB@txString                = mainTitle
-;  resB@lbTitleString           = " g/kg "
-;  resB@lbTitlePosition         = "Right"
-;  resB@gsnPanelLabelBar        = True
-;  resB@lbOrientation           = "Vertical"
-;  resB@lbLabelFontHeightF      = 0.01
-;
-;  resT@gsnPanelDebug         = True
-;  resB@gsnPanelDebug         = True
-
-;  gsn_panel(wks,plot_u,(/1,3/),resT)
-;  gsn_panel(wks,plot_b,(/1,3/),resB)
- 
-; default: if gsn_panel is not being used...
-;psres  = True
-;maximize_output(wks,psres) 
-
 ; if gsn_panel is being used... 
 if (use_gsn_panel) then
   resP                         = True
-  ;resP@txString                = " " 
-  ;;resP@txString                = "good grief"
-  ;;resP@txString                = plottitle
-  ;resP@gsnPanelLabelBar        = True
-  ;resP@pmLabelBarWidthF    = 0.3
-  ;resP@pmLabelBarHeightF    = 0.06
-  ;resP@lbTitleOn           = True
-  ;resP@lbTitlePosition     = "Bottom"
-  ;resP@lbTitlePosition     = "Top"
-  ;resP@lbTitleString       = "mm/day"
-  ;resP@lbTitleFontHeightF  = 0.015
-  ;resP@lbLabelStrings = (/"1","jo","hi","no","314","8","yes"/)
-  ;resP@lbLabelFontHeightF      = 0.015
   resP@gsnPanelFigureStrings = (/"a","b","c","d","e","f"/)
   resP@gsnPanelFigureStringsFontHeightF = 0.015
   resP@amJust                = "TopLeft"
-;                         0.078,0.316
   resP@gsnPanelXF    = (/0.08,0.35,0.62,0.08,0.35,0.62/)
   resP@gsnPanelDebug        = True 
  
-   gsn_panel(wks,plot,(/2,3/),resP)
+  gsn_panel(wks,plot,(/2,3/),resP)
   
-  ;maximize_output(wks,resP)
 else 
   psres  = True
   maximize_output(wks,psres) 
