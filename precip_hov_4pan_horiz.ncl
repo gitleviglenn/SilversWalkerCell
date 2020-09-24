@@ -26,9 +26,9 @@ fileout="hov_precip"
 plottitle="test title tude"
 ;endtime=1800
 endtime=1090
-;var1="prec_ls" ; time, grid_y, grid_x
+var1="prec_ls" ; time, grid_y, grid_x
 ;var1="prec_conv" ; time, grid_y, grid_x
-var1="precip"
+;var1="precip"
 ;var1="olr" ; time, grid_y, grid_x
 dom_x=1 ; 1 is default and corresponds to a domain size of 4000km
 
